@@ -7,6 +7,8 @@ plugins {
 
 dependencies {
     arrayOf(
+        projects.core.ui,
+        projects.feature.main,
         libs.coil.compose,
         libs.threetenabp,
     ).forEach {

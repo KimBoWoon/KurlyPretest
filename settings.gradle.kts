@@ -22,3 +22,10 @@ dependencyResolutionManagement {
 
 rootProject.name = "KurlyPretest"
 include(":app")
+include(":core:mockserver")
+include(":core:network")
+include(":core:common")
+include(":feature:main")
+include(":core:data")
+include(":core:model")
+include(":core:ui")
