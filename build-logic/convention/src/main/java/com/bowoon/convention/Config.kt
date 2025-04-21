@@ -45,24 +45,6 @@ object Config {
             targetSdkVersion = ApplicationSetting.COMPILE_SDK_VERSION,
             versionCode = 1,
             versionName = "1.0.0"
-        ) {
-            object Sign {
-                object Release {
-                    const val name = "Release"
-                    const val storeFile = "store_file_path"
-                    const val storePassword = "store_password"
-                    const val keyAlias = "key_alias"
-                    const val keyPassword = "key_password"
-                }
-
-                object Debug {
-                    const val name = "Debug"
-                    const val storeFile = "store_file_path"
-                    const val storePassword = "store_password"
-                    const val keyAlias = "key_alias"
-                    const val keyPassword = "key_password"
-                }
-            }
-        }
+        )
     }
 }
