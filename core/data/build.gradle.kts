@@ -17,6 +17,7 @@ android {
 dependencies {
     arrayOf(
         projects.core.model,
+        projects.core.database,
         libs.androidx.compose.paging,
         libs.threetenabp
     ).forEach {

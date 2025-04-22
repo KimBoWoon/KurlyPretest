@@ -28,6 +28,7 @@ dependencies {
     compileOnly(libs.android.gradle)
     compileOnly(libs.android.plugin)
     compileOnly(libs.ksp.gradlePlugin)
+    compileOnly(libs.room.gradlePlugin)
 }
 
 gradlePlugin {

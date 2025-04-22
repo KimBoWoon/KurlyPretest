@@ -56,5 +56,5 @@ object TMDBRetrofitModule {
     fun provideOkHttpProfilerInterceptor(): OkHttpProfilerInterceptor = OkHttpProfilerInterceptor()
 
     @Provides
-    fun provideTMDBUrl(): String = "https://api.themoviedb.org/"
+    fun provideTMDBUrl(): String = "https://kurly.com"
 }

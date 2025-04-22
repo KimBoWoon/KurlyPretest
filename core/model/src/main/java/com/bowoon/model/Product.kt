@@ -11,4 +11,5 @@ data class Product(
     val originalPrice: Int? = null,
     val discountedPrice: Int? = null,
     val isSoldOut: Boolean? = null,
+    val isFavorite: Boolean = false
 )

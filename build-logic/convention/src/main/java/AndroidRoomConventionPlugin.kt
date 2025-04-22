@@ -1,3 +1,4 @@
+import androidx.room.gradle.RoomExtension
 import com.bowoon.convention.libs
 import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Plugin
@@ -16,9 +17,9 @@ class AndroidRoomConventionPlugin : Plugin<Project> {
                 arg("room.generateKotlin", "true")
             }
 
-//            extensions.configure<RoomExtension> {
-//                schemaDirectory("$projectDir/schemas")
-//            }
+            extensions.configure<RoomExtension> {
+                schemaDirectory("$projectDir/schemas")
+            }
 
             dependencies {
                 "implementation"(libs.findLibrary("androidx.room.runtime").get())

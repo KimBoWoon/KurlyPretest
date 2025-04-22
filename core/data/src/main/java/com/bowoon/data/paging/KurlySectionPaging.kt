@@ -3,7 +3,7 @@ package com.bowoon.data.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.bowoon.common.Log
-import com.bowoon.model.MainProduct
+import com.bowoon.model.MainSection
 import com.bowoon.model.Products
 import com.bowoon.network.KurlyDataSource
 import kotlinx.coroutines.Deferred
@@ -14,8 +14,8 @@ import javax.inject.Inject
 
 class KurlySectionPaging @Inject constructor(
     private val apis: KurlyDataSource
-) : PagingSource<Int, MainProduct>() {
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MainProduct> =
+) : PagingSource<Int, MainSection>() {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MainSection> =
         runCatching {
             val request = mutableListOf<Deferred<Products>>()
             val response = apis.getSections(params.key ?: 1)
@@ -35,7 +35,7 @@ class KurlySectionPaging @Inject constructor(
 
             LoadResult.Page(
                 data = response.data?.map { section ->
-                    MainProduct(
+                    MainSection(
                         sectionId = section.id,
                         type = section.type,
                         title = section.title,
@@ -50,7 +50,7 @@ class KurlySectionPaging @Inject constructor(
             LoadResult.Error(e)
         }
 
-    override fun getRefreshKey(state: PagingState<Int, MainProduct>): Int? =
+    override fun getRefreshKey(state: PagingState<Int, MainSection>): Int? =
         state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey ?: anchorPage?.nextKey

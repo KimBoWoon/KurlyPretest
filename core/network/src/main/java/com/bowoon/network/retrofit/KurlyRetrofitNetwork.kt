@@ -21,13 +21,14 @@ import javax.inject.Singleton
  */
 @Singleton
 class KurlyRetrofitNetwork @Inject constructor(
+    baseUrl: String,
     client: OkHttpClient,
     customCallAdapter: CustomCallAdapter,
     serialization: Json,
     jsonMediaType: MediaType
 ) : KurlyDataSource {
     private val kurlyApi = Retrofit.Builder()
-        .baseUrl("https://kurly.com")
+        .baseUrl(baseUrl)
         .addCallAdapterFactory(customCallAdapter)
         .addConverterFactory(serialization.asConverterFactory(jsonMediaType))
         .client(client)

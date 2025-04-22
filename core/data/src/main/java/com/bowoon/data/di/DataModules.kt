@@ -1,5 +1,7 @@
 package com.bowoon.data.di
 
+import com.bowoon.data.repository.DatabaseRepository
+import com.bowoon.data.repository.DatabaseRepositoryImpl
 import com.bowoon.data.repository.MainRepository
 import com.bowoon.data.repository.MainRepositoryImpl
 import dagger.Binds
@@ -14,4 +16,9 @@ abstract class DataModules {
     abstract fun bindUserRepository(
         mainRepository: MainRepositoryImpl
     ): MainRepository
+
+    @Binds
+    abstract fun bindDatabaseRepository(
+        databaseRepository: DatabaseRepositoryImpl
+    ): DatabaseRepository
 }
