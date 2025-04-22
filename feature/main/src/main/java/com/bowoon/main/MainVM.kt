@@ -7,7 +7,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
-import com.bowoon.common.Log
 import com.bowoon.data.repository.DatabaseRepository
 import com.bowoon.data.repository.MainRepository
 import com.bowoon.model.MainSection
@@ -48,10 +47,7 @@ class MainVM @Inject constructor(
             when (it) {
                 is MainUiModel.Data -> {
                     MainUiModel.Data(
-                        MainSection(
-                            sectionId = it.mainProduct.sectionId,
-                            type = it.mainProduct.type,
-                            title = it.mainProduct.title,
+                        mainProduct = it.mainProduct.copy(
                             products = it.mainProduct.products?.map { product ->
                                 product.copy(isFavorite = favoriteList.find { it.id == product.id } != null)
                             }
@@ -65,14 +61,12 @@ class MainVM @Inject constructor(
 
     fun addFavorite(product: Product) {
         viewModelScope.launch {
-            Log.d(TAG, "addFavorite")
             databaseRepository.insertProduct(product)
         }
     }
 
     fun removeFavorite(product: Product) {
         viewModelScope.launch {
-            Log.d(TAG, "removeFavorite")
             databaseRepository.deleteProduct(product)
         }
     }

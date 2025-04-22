@@ -5,6 +5,7 @@ import androidx.paging.PagingState
 import com.bowoon.common.Log
 import com.bowoon.model.MainSection
 import com.bowoon.model.Products
+import com.bowoon.model.SectionType
 import com.bowoon.network.KurlyDataSource
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -37,7 +38,7 @@ class KurlySectionPaging @Inject constructor(
                 data = response.data?.map { section ->
                     MainSection(
                         sectionId = section.id,
-                        type = section.type,
+                        type = SectionType.entries.find { it.label == section.type } ?: SectionType.NONE,
                         title = section.title,
                         products = section.products?.data ?: emptyList()
                     )

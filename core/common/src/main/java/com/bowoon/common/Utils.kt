@@ -27,3 +27,8 @@ inline fun <reified T> Intent.getSafetyParcelable(key: String): T? =
     } else {
         getParcelableExtra(key)
     }
+
+fun getDiscountRate(
+    originalPrice: Int,
+    discountedPrice: Int
+): Float = ((originalPrice.toFloat() - discountedPrice.toFloat()) / originalPrice.toFloat()) * 100

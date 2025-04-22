@@ -2,19 +2,14 @@ package com.bowoon.main
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -32,34 +27,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.PlatformTextStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.bowoon.common.Log
 import com.bowoon.model.Product
-import com.bowoon.ui.components.FavoriteButtonComponent
+import com.bowoon.model.SectionType
 import com.bowoon.ui.components.PagingAppendErrorComponent
+import com.bowoon.ui.components.ProductComponent
 import com.bowoon.ui.dialog.ConfirmDialog
-import com.bowoon.ui.image.DynamicAsyncImageLoader
 import com.bowoon.ui.utils.dp1
 import com.bowoon.ui.utils.dp10
-import com.bowoon.ui.utils.dp150
 import com.bowoon.ui.utils.dp20
-import com.bowoon.ui.utils.dp200
-import com.bowoon.ui.utils.dp5
-import com.bowoon.ui.utils.sp13
-import com.bowoon.ui.utils.sp15
 import com.bowoon.ui.utils.sp20
-import java.util.Locale
 
 @Composable
 fun MainScreen(
@@ -134,22 +117,22 @@ fun MainScreen(
                                     fontWeight = FontWeight.Bold
                                 )
                                 when (section.type) {
-                                    "vertical" -> VerticalProductList(
+                                    SectionType.NONE -> {}
+                                    SectionType.VERTICAL -> VerticalProductList(
                                         product = section.products ?: emptyList(),
                                         addFavorite = addFavorite,
                                         removeFavorite = removeFavorite
                                     )
-                                    "horizontal" -> HorizontalProductList(
+                                    SectionType.HORIZONTAL -> HorizontalProductList(
                                         product = section.products ?: emptyList(),
                                         addFavorite = addFavorite,
                                         removeFavorite = removeFavorite
                                     )
-                                    "grid" -> GridProductList(
+                                    SectionType.GRID -> GridProductList(
                                         product = section.products?.take(6) ?: emptyList(),
                                         addFavorite = addFavorite,
                                         removeFavorite = removeFavorite
                                     )
-                                    else -> Log.e("${section.type} is not supported...")
                                 }
                             }
                         }
@@ -157,7 +140,7 @@ fun MainScreen(
                     }
                 }
             }
-            if (isAppend) {
+            if (isAppend && !sectionPager.loadState.append.endOfPaginationReached) {
                 item {
                     CircularProgressIndicator(
                         modifier = Modifier.wrapContentSize().padding(vertical = dp20)
@@ -184,8 +167,9 @@ fun VerticalProductList(
         verticalArrangement = Arrangement.spacedBy(space = dp10)
     ) {
         product.forEach { product ->
-            VerticalProductComponent(
+            ProductComponent(
                 product = product,
+                type = SectionType.VERTICAL,
                 addFavorite = addFavorite,
                 removeFavorite = removeFavorite
             )
@@ -209,6 +193,7 @@ fun HorizontalProductList(
         ) { index ->
             ProductComponent(
                 product = product[index],
+                type = SectionType.HORIZONTAL,
                 addFavorite = addFavorite,
                 removeFavorite = removeFavorite
             )
@@ -235,166 +220,10 @@ fun GridProductList(
         ) { index ->
             ProductComponent(
                 product = product[index],
+                type = SectionType.GRID,
                 addFavorite = addFavorite,
                 removeFavorite = removeFavorite
             )
         }
     }
 }
-
-@Composable
-fun VerticalProductComponent(
-    product: Product,
-    addFavorite: (Product) -> Unit,
-    removeFavorite: (Product) -> Unit
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        ProductImageComponent(
-            modifier = Modifier.fillMaxWidth().aspectRatio(6f / 4f),
-            source = product.image ?: "",
-            isFavorite = product.isFavorite,
-            addFavorite = { addFavorite(product) },
-            removeFavorite = { removeFavorite(product) }
-        )
-        ProductTitleComponent(
-            title = product.name ?: "",
-            titleLine = 1
-        )
-        if (product.discountedPrice != null) {
-            val discountRate = getDiscountRate(product.originalPrice ?: 0, product.discountedPrice ?: 0)
-
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = dp5),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = String.format(locale = Locale.getDefault(), format = "%.0f%s", discountRate, "%"),
-                    color = Color(0xFFFA622F),
-                    fontSize = sp15,
-                    style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false), fontWeight = FontWeight.Bold)
-                )
-                Text(
-                    modifier = Modifier.padding(horizontal = dp5),
-                    text = "${product.discountedPrice}원",
-                    fontSize = sp15,
-                    style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false), fontWeight = FontWeight.Bold)
-                )
-                Text(
-                    text = "${product.originalPrice}원",
-                    textDecoration = TextDecoration.LineThrough,
-                    fontSize = sp13,
-                    style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
-                )
-            }
-        } else {
-            Text(
-                text = "${product.originalPrice}원",
-                fontSize = sp15,
-                style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false), fontWeight = FontWeight.Bold)
-            )
-        }
-    }
-}
-
-@Composable
-fun ProductComponent(
-    product: Product,
-    addFavorite: (Product) -> Unit,
-    removeFavorite: (Product) -> Unit
-) {
-    Column(
-        modifier = Modifier.width(width = dp150).wrapContentHeight()
-    ) {
-        ProductImageComponent(
-            modifier = Modifier.fillMaxWidth().height(height = dp200),
-            source = product.image ?: "",
-            isFavorite = product.isFavorite,
-            addFavorite = { addFavorite(product) },
-            removeFavorite = { removeFavorite(product) }
-        )
-        ProductTitleComponent(
-            title = product.name ?: "",
-            titleLine = 2
-        )
-        if (product.discountedPrice != null) {
-            val discountRate = getDiscountRate(product.originalPrice ?: 0, product.discountedPrice ?: 0)
-
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = dp5)
-            ) {
-                Text(
-                    modifier = Modifier.padding(end = dp5),
-                    text = String.format(locale = Locale.getDefault(), format = "%.0f%s", discountRate, "%"),
-                    color = Color(0xFFFA622F),
-                    fontSize = sp15,
-                    style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false), fontWeight = FontWeight.Bold)
-                )
-                Text(
-                    text = "${product.discountedPrice}원",
-                    fontSize = sp15,
-                    style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false), fontWeight = FontWeight.Bold)
-                )
-            }
-            Text(
-                text = "${product.originalPrice}원",
-                textDecoration = TextDecoration.LineThrough,
-                fontSize = sp13,
-                style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
-            )
-        } else {
-            Text(
-                text = "${product.originalPrice}원",
-                fontSize = sp15,
-                style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false), fontWeight = FontWeight.Bold)
-            )
-            Text(text = "")
-        }
-    }
-}
-
-@Composable
-fun ProductTitleComponent(
-    title: String,
-    titleLine: Int
-) {
-    Text(
-        modifier = Modifier.fillMaxWidth().padding(vertical = dp5),
-        text = title,
-        minLines = titleLine,
-        maxLines = titleLine,
-        overflow = TextOverflow.Ellipsis,
-        fontSize = sp13,
-        style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
-    )
-}
-
-@Composable
-fun ProductImageComponent(
-    modifier: Modifier,
-    source: String,
-    isFavorite: Boolean,
-    addFavorite: () -> Unit,
-    removeFavorite: () -> Unit
-) {
-    Box {
-        DynamicAsyncImageLoader(
-            source = source,
-            contentDescription = null,
-            modifier = modifier
-        )
-        FavoriteButtonComponent(
-            modifier = Modifier.align(Alignment.TopEnd),
-            isFavorite = isFavorite,
-            onClick = {
-                if (isFavorite) removeFavorite() else addFavorite()
-            }
-        )
-    }
-}
-
-fun getDiscountRate(
-    originalPrice: Int,
-    discountedPrice: Int
-): Float = ((originalPrice.toFloat() - discountedPrice.toFloat()) / originalPrice.toFloat()) * 100
