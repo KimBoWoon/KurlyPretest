@@ -54,6 +54,7 @@ val dp200 = 200.dp
 val dp250 = 250.dp
 val dp300 = 300.dp
 val dp500 = 500.dp
+val dp1000 = 1000.dp
 
 val sp0 = 0.sp
 val sp0_5 = 0.5.sp

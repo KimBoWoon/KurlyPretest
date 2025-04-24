@@ -54,8 +54,8 @@ class MainVMTest {
         assertEquals(
             list.filter { it != MainUiModel.Separator },
             testSectionInfo.data?.map<Section, MainUiModel> { section ->
-                MainUiModel.Data(
-                    mainProduct = MainSection(
+                MainUiModel.Section(
+                    section = MainSection(
                         sectionId = section.id,
                         type = SectionType.entries.find { section.type == it.label } ?: SectionType.NONE,
                         title = section.title,

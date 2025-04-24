@@ -59,14 +59,14 @@ class MainScreenTest {
 
             testDatabaseRepository.productDatabase.emit(emptyList())
 
-            val items = viewModel.sectionPager.asSnapshot().filter { it != MainUiModel.Separator }.filterIsInstance<MainUiModel.Data>()
+            val items = viewModel.sectionPager.asSnapshot().filter { it != MainUiModel.Separator }.filterIsInstance<MainUiModel.Section>()
             items.forEach {
-                onNodeWithContentDescription(label = "sectionList").performScrollToNode(hasText(text = it.mainProduct.title!!)).assertExists().assertIsDisplayed()
+                onNodeWithContentDescription(label = "sectionList").performScrollToNode(hasText(text = it.section.title!!)).assertExists().assertIsDisplayed()
 
-                when (it.mainProduct.type) {
+                when (it.section.type) {
                     SectionType.NONE -> {}
                     SectionType.VERTICAL -> {
-                        it.mainProduct.products?.forEach { product ->
+                        it.section.products?.forEach { product ->
                             onNodeWithContentDescription(label = "verticalSectionList").performScrollToNode(hasText(text = product.name!!)).assertExists().assertIsDisplayed()
                             product.discountedPrice?.let { discountedPrice ->
                                 onNodeWithText(text = "${getDiscountRate(product.originalPrice ?: 0, discountedPrice)}%")
@@ -79,7 +79,7 @@ class MainScreenTest {
                         }
                     }
                     SectionType.HORIZONTAL -> {
-                        it.mainProduct.products?.forEach { product ->
+                        it.section.products?.forEach { product ->
                             onNodeWithContentDescription(label = "horizontalSectionList").performScrollToNode(hasText(text = product.name!!)).assertExists().assertIsDisplayed()
                             product.discountedPrice?.let { discountedPrice ->
                                 onNodeWithText(text = "${getDiscountRate(product.originalPrice ?: 0, discountedPrice)}%")
@@ -92,7 +92,7 @@ class MainScreenTest {
                         }
                     }
                     SectionType.GRID -> {
-                        it.mainProduct.products?.forEach { product ->
+                        it.section.products?.forEach { product ->
                             onNodeWithText(text = product.name!!).assertExists().assertIsDisplayed()
                             product.discountedPrice?.let { discountedPrice ->
                                 onNodeWithText(text = "${getDiscountRate(product.originalPrice ?: 0, discountedPrice)}%")
@@ -131,9 +131,9 @@ class MainScreenTest {
 
             products.filterNotNull().forEach { product ->
                 viewModel.sectionPager.asSnapshot()
-                    .filterIsInstance<MainUiModel.Data>()
-                    .find { section -> section.mainProduct.products?.find { it.id == product.id } != null }
-                    ?.mainProduct
+                    .filterIsInstance<MainUiModel.Section>()
+                    .find { section -> section.section.products?.find { it.id == product.id } != null }
+                    ?.section
                     ?.let { section ->
                         when (section.type) {
                             SectionType.NONE -> throw RuntimeException("Section type is none...")
@@ -226,8 +226,12 @@ class MainScreenTest {
     @Test
     fun removeFavoriteTest() = runTest {
         val favoriteProducts = listOf(
+//            testSectionInfo.data?.get(1)?.products?.data?.get(2),
+//            testSectionInfo.data?.get(1)?.products?.data?.get(5),
+            testSectionInfo.data?.get(0)?.products?.data?.get(2),
+            testSectionInfo.data?.get(2)?.products?.data?.get(1),
+            testSectionInfo.data?.get(0)?.products?.data?.get(4),
             testSectionInfo.data?.get(2)?.products?.data?.get(4),
-            testSectionInfo.data?.get(0)?.products?.data?.get(0),
 //            testSectionInfo.data?.get(1)?.products?.data?.get(3)
         )
         composeTestRule.apply {
@@ -241,13 +245,13 @@ class MainScreenTest {
 
             onNodeWithContentDescription(label = "mainLoadingProgress").assertExists().assertIsDisplayed()
 
-            favoriteProducts.filterNotNull().forEach { product -> testDatabaseRepository.insertProduct(product = product) }
+            testDatabaseRepository.productDatabase.emit(favoriteProducts.filterNotNull())
 
             favoriteProducts.filterNotNull().forEach { favoriteProduct ->
                 viewModel.sectionPager.asSnapshot()
-                    .filterIsInstance<MainUiModel.Data>()
-                    .find { section -> section.mainProduct.products?.find { product -> product.id == favoriteProduct.id } != null }
-                    ?.mainProduct
+                    .filterIsInstance<MainUiModel.Section>()
+                    .find { section -> section.section.products?.find { product -> product.id == favoriteProduct.id } != null }
+                    ?.section
                     ?.let { section ->
                         when (section.type) {
                             SectionType.NONE -> throw RuntimeException("Section type is none...")

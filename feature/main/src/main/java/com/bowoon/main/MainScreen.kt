@@ -27,11 +27,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -43,6 +43,7 @@ import com.bowoon.ui.components.ProductComponent
 import com.bowoon.ui.dialog.ConfirmDialog
 import com.bowoon.ui.utils.dp1
 import com.bowoon.ui.utils.dp10
+import com.bowoon.ui.utils.dp1000
 import com.bowoon.ui.utils.dp20
 import com.bowoon.ui.utils.sp20
 
@@ -83,10 +84,10 @@ fun MainScreen(
             sectionPager.loadState.refresh is LoadState.NotLoading -> isRefreshing = false
             sectionPager.loadState.refresh is LoadState.Error -> {
                 ConfirmDialog(
-                    title = "통신 실패",
-                    message = (sectionPager.loadState.refresh as? LoadState.Error)?.error?.message ?: "something wrong...",
-                    confirmPair = "재시도" to { sectionPager.retry() },
-                    dismissPair = "취소" to {}
+                    title = stringResource(com.bowoon.kurlypretest.core.network.R.string.network_connection_failure),
+                    message = (sectionPager.loadState.refresh as? LoadState.Error)?.error?.message ?: stringResource(com.bowoon.kurlypretest.core.network.R.string.something_wrong),
+                    confirmPair = stringResource(com.bowoon.kurlypretest.core.network.R.string.retry) to { sectionPager.retry() },
+                    dismissPair = stringResource(com.bowoon.kurlypretest.core.network.R.string.cancel) to {}
                 )
             }
             sectionPager.loadState.append is LoadState.NotLoading -> isAppend = false
@@ -101,7 +102,7 @@ fun MainScreen(
                 key = { index ->
                     when (val section = sectionPager.peek(index)) {
                         is MainUiModel.Separator -> "$index separator"
-                        is MainUiModel.Data -> "${section.mainProduct.sectionId}_${section.mainProduct.title}"
+                        is MainUiModel.Section -> "${section.section.sectionId}_${section.section.title}"
                         null -> {}
                     }
                 }
@@ -109,8 +110,8 @@ fun MainScreen(
                 Column {
                     when (val item = sectionPager[index]) {
                         is MainUiModel.Separator -> Spacer(modifier = Modifier.padding(all = dp20).fillMaxWidth().height(height = dp1).background(color = MaterialTheme.colorScheme.primary))
-                        is MainUiModel.Data -> {
-                            item.mainProduct.let { section ->
+                        is MainUiModel.Section -> {
+                            item.section.let { section ->
                                 Text(
                                     modifier = Modifier.fillMaxWidth().padding(vertical = dp10),
                                     text = section.title ?: "",
@@ -186,7 +187,7 @@ fun HorizontalProductList(
     removeFavorite: (Product) -> Unit
 ) {
     LazyRow(
-        modifier = Modifier.semantics { contentDescription = "horizontalSectionList" },
+        modifier = Modifier.semantics { contentDescription = "horizontalSectionList" }.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(space = dp10),
         contentPadding = PaddingValues(horizontal = dp10)
     ) {
@@ -211,7 +212,7 @@ fun GridProductList(
     removeFavorite: (Product) -> Unit
 ) {
     LazyVerticalGrid(
-        modifier = Modifier.semantics { contentDescription = "gridSectionList" }.heightIn(max = 1000.dp),
+        modifier = Modifier.semantics { contentDescription = "gridSectionList" }.heightIn(max = dp1000),
         columns = GridCells.Fixed(3),
         contentPadding = PaddingValues(horizontal = dp10),
         horizontalArrangement = Arrangement.spacedBy(space = dp10),

@@ -32,8 +32,8 @@ class MainVM @Inject constructor(
             initialKey = 1,
             pagingSourceFactory = { sectionRepository.getSection() }
         ).flow.cachedIn(scope = viewModelScope).map {
-            it.map { mainSection -> MainUiModel.Data(mainSection) }
-                .insertSeparators { before: MainUiModel.Data?, after: MainUiModel.Data? ->
+            it.map { mainSection -> MainUiModel.Section(mainSection) }
+                .insertSeparators { before: MainUiModel.Section?, after: MainUiModel.Section? ->
                     if (before != null && after != null) {
                         MainUiModel.Separator
                     } else {
@@ -45,10 +45,10 @@ class MainVM @Inject constructor(
     ) { pager, favoriteList ->
         pager.map {
             when (it) {
-                is MainUiModel.Data -> {
-                    MainUiModel.Data(
-                        mainProduct = it.mainProduct.copy(
-                            products = it.mainProduct.products?.map { product ->
+                is MainUiModel.Section -> {
+                    MainUiModel.Section(
+                        section = it.section.copy(
+                            products = it.section.products?.map { product ->
                                 product.copy(isFavorite = favoriteList.find { it.id == product.id } != null)
                             }
                         )
@@ -74,5 +74,5 @@ class MainVM @Inject constructor(
 
 sealed interface MainUiModel {
     data object Separator : MainUiModel
-    data class Data(val mainProduct: MainSection) : MainUiModel
+    data class Section(val section: MainSection) : MainUiModel
 }
