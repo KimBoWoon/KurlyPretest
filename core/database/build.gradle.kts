@@ -26,4 +26,8 @@ dependencies {
     ).forEach {
         ksp(it)
     }
+
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
 }

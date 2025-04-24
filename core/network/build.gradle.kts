@@ -23,4 +23,6 @@ dependencies {
     ).forEach {
         implementation(it)
     }
+
+    testImplementation(projects.core.testing)
 }

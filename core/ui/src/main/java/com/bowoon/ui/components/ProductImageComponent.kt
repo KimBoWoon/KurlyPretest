@@ -17,7 +17,7 @@ fun ProductImageComponent(
     Box {
         DynamicAsyncImageLoader(
             source = source,
-            contentDescription = null,
+            contentDescription = source,
             modifier = modifier
         )
         FavoriteButtonComponent(

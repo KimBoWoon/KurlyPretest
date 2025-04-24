@@ -26,4 +26,6 @@ dependencies {
 
     api(projects.core.common)
     api(projects.core.network)
+
+    testImplementation(projects.core.testing)
 }

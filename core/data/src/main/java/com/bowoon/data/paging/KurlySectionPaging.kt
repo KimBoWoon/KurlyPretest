@@ -51,9 +51,5 @@ class KurlySectionPaging @Inject constructor(
             LoadResult.Error(e)
         }
 
-    override fun getRefreshKey(state: PagingState<Int, MainSection>): Int? =
-        state.anchorPosition?.let { anchorPosition ->
-            val anchorPage = state.closestPageToPosition(anchorPosition)
-            anchorPage?.prevKey ?: anchorPage?.nextKey
-        }
+    override fun getRefreshKey(state: PagingState<Int, MainSection>): Int = 1
 }

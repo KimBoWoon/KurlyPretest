@@ -27,6 +27,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -75,7 +77,7 @@ fun MainScreen(
         when {
             sectionPager.loadState.refresh is LoadState.Loading -> {
                 isRefreshing = true
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                CircularProgressIndicator(modifier = Modifier.semantics { contentDescription = "mainLoadingProgress" }.align(Alignment.Center))
             }
             sectionPager.loadState.append is LoadState.Loading -> isAppend = true
             sectionPager.loadState.refresh is LoadState.NotLoading -> isRefreshing = false
@@ -91,7 +93,7 @@ fun MainScreen(
         }
 
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.semantics { contentDescription = "sectionList" }.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(
@@ -163,7 +165,7 @@ fun VerticalProductList(
     removeFavorite: (Product) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = dp10),
+        modifier = Modifier.semantics { contentDescription = "verticalSectionList" }.fillMaxWidth().padding(horizontal = dp10),
         verticalArrangement = Arrangement.spacedBy(space = dp10)
     ) {
         product.forEach { product ->
@@ -184,6 +186,7 @@ fun HorizontalProductList(
     removeFavorite: (Product) -> Unit
 ) {
     LazyRow(
+        modifier = Modifier.semantics { contentDescription = "horizontalSectionList" },
         horizontalArrangement = Arrangement.spacedBy(space = dp10),
         contentPadding = PaddingValues(horizontal = dp10)
     ) {
@@ -208,7 +211,7 @@ fun GridProductList(
     removeFavorite: (Product) -> Unit
 ) {
     LazyVerticalGrid(
-        modifier = Modifier.heightIn(max = 1000.dp),
+        modifier = Modifier.semantics { contentDescription = "gridSectionList" }.heightIn(max = 1000.dp),
         columns = GridCells.Fixed(3),
         contentPadding = PaddingValues(horizontal = dp10),
         horizontalArrangement = Arrangement.spacedBy(space = dp10),

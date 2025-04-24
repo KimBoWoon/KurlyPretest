@@ -8,7 +8,7 @@ import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
 import com.bowoon.data.repository.DatabaseRepository
-import com.bowoon.data.repository.MainRepository
+import com.bowoon.data.repository.SectionRepository
 import com.bowoon.model.MainSection
 import com.bowoon.model.Product
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainVM @Inject constructor(
-    private val mainRepository: MainRepository,
+    private val sectionRepository: SectionRepository,
     private val databaseRepository: DatabaseRepository
 ) : ViewModel() {
     companion object {
@@ -30,7 +30,7 @@ class MainVM @Inject constructor(
         Pager(
             config = PagingConfig(pageSize = 1, prefetchDistance = 5, initialLoadSize = 1),
             initialKey = 1,
-            pagingSourceFactory = { mainRepository.getSection() }
+            pagingSourceFactory = { sectionRepository.getSection() }
         ).flow.cachedIn(scope = viewModelScope).map {
             it.map { mainSection -> MainUiModel.Data(mainSection) }
                 .insertSeparators { before: MainUiModel.Data?, after: MainUiModel.Data? ->

@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -39,7 +40,7 @@ fun ProductComponent(
             SectionType.NONE -> Modifier
             SectionType.VERTICAL -> Modifier.fillMaxWidth()
             SectionType.HORIZONTAL, SectionType.GRID -> Modifier.width(width = dp150).wrapContentHeight()
-        }
+        }.testTag(tag = "${product.name}_productComponent")
     ) {
         ProductImageComponent(
             modifier = when (type) {
