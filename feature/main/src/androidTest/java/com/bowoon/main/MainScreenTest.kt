@@ -4,7 +4,6 @@ import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.hasContentDescription
-import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onChildren
@@ -33,6 +32,8 @@ class MainScreenTest {
     private lateinit var viewModel: MainVM
     private lateinit var testSectionRepository: TestSectionRepository
     private lateinit var testDatabaseRepository: TestDatabaseRepository
+    private lateinit var productPriceString: String
+    private lateinit var productDiscountRate: String
 
     @Before
     fun setup() {
@@ -42,6 +43,11 @@ class MainScreenTest {
             sectionRepository = testSectionRepository,
             databaseRepository = testDatabaseRepository
         )
+
+        composeTestRule.activity.apply {
+            productPriceString = getString(com.bowoon.kurlypretest.core.ui.R.string.product_price)
+            productDiscountRate = getString(com.bowoon.kurlypretest.core.ui.R.string.discount_rate)
+        }
     }
 
     @Test
@@ -59,63 +65,104 @@ class MainScreenTest {
 
             testDatabaseRepository.productDatabase.emit(emptyList())
 
-            val items = viewModel.sectionPager.asSnapshot().filter { it != MainUiModel.Separator }.filterIsInstance<MainUiModel.Section>()
-            items.forEach {
-                onNodeWithContentDescription(label = "sectionList").performScrollToNode(hasText(text = it.section.title!!)).assertExists().assertIsDisplayed()
+            viewModel.sectionPager.asSnapshot()
+                .filter { it != MainUiModel.Separator }
+                .filterIsInstance<MainUiModel.Section>()
+                .forEach {
+                    onNodeWithContentDescription(label = "sectionList")
+                        .performScrollToNode(hasText(text = it.section.title!!))
+                        .assertExists()
+                        .assertIsDisplayed()
 
-                when (it.section.type) {
-                    SectionType.NONE -> {}
-                    SectionType.VERTICAL -> {
-                        it.section.products?.forEach { product ->
-                            onNodeWithContentDescription(label = "verticalSectionList").performScrollToNode(hasText(text = product.name!!)).assertExists().assertIsDisplayed()
-                            product.discountedPrice?.let { discountedPrice ->
-                                onNodeWithText(text = "${getDiscountRate(product.originalPrice ?: 0, discountedPrice)}%")
+                    when (it.section.type) {
+                        SectionType.NONE -> {}
+                        SectionType.VERTICAL -> {
+                            it.section.products?.forEach { product ->
+                                onNodeWithContentDescription(label = "verticalSectionList")
+                                    .performScrollToNode(hasText(text = product.name!!))
+                                    .assertExists()
+                                    .assertIsDisplayed()
+
+                                product.discountedPrice?.let { discountedPrice ->
+                                    onNodeWithText(text = productDiscountRate.format(getDiscountRate(product.originalPrice ?: 0, discountedPrice).toInt(), "%"))
+                                }
+                                onNodeWithContentDescription(label = "verticalSectionList")
+                                    .performScrollToNode(hasText(text = productPriceString.format(product.originalPrice)))
+                                    .assertExists()
+                                    .assertIsDisplayed()
+                                product.discountedPrice?.let { discountedPrice ->
+                                    onNodeWithContentDescription(label = "verticalSectionList")
+                                        .performScrollToNode(hasText(text = productPriceString.format(discountedPrice)))
+                                        .assertExists()
+                                        .assertIsDisplayed()
+                                }
+                                onNodeWithContentDescription(label = "verticalSectionList")
+                                    .performScrollToNode(hasContentDescription(value = product.image!!))
+                                    .assertExists()
+                                    .assertIsDisplayed()
                             }
-                            onNodeWithContentDescription(label = "verticalSectionList").performScrollToNode(hasText(text = "${product.originalPrice}원")).assertExists().assertIsDisplayed()
-                            product.discountedPrice?.let { discountedPrice ->
-                                onNodeWithContentDescription(label = "verticalSectionList").performScrollToNode(hasText(text = "${discountedPrice}원")).assertExists().assertIsDisplayed()
-                            }
-                            onNodeWithContentDescription(label = "verticalSectionList").performScrollToNode(hasContentDescription(value = product.image!!)).assertExists().assertIsDisplayed()
                         }
-                    }
-                    SectionType.HORIZONTAL -> {
-                        it.section.products?.forEach { product ->
-                            onNodeWithContentDescription(label = "horizontalSectionList").performScrollToNode(hasText(text = product.name!!)).assertExists().assertIsDisplayed()
-                            product.discountedPrice?.let { discountedPrice ->
-                                onNodeWithText(text = "${getDiscountRate(product.originalPrice ?: 0, discountedPrice)}%")
+
+                        SectionType.HORIZONTAL -> {
+                            it.section.products?.forEach { product ->
+                                onNodeWithContentDescription(label = "horizontalSectionList")
+                                    .performScrollToNode(hasText(text = product.name!!))
+                                    .assertExists()
+                                    .assertIsDisplayed()
+                                product.discountedPrice?.let { discountedPrice ->
+                                    onNodeWithText(text = productDiscountRate.format(getDiscountRate(product.originalPrice ?: 0, discountedPrice).toInt(), "%"))
+                                }
+                                onNodeWithContentDescription(label = "horizontalSectionList")
+                                    .performScrollToNode(hasText(text = productPriceString.format(product.originalPrice)))
+                                    .assertExists()
+                                    .assertIsDisplayed()
+                                product.discountedPrice?.let { discountedPrice ->
+                                    onNodeWithContentDescription(label = "horizontalSectionList")
+                                        .performScrollToNode(hasText(text = productPriceString.format(discountedPrice)))
+                                        .assertExists()
+                                        .assertIsDisplayed()
+                                }
+                                onNodeWithContentDescription(label = "horizontalSectionList")
+                                    .performScrollToNode(hasContentDescription(value = product.image!!))
+                                    .assertExists()
+                                    .assertIsDisplayed()
                             }
-                            onNodeWithContentDescription(label = "horizontalSectionList").performScrollToNode(hasText(text = "${product.originalPrice}원")).assertExists().assertIsDisplayed()
-                            product.discountedPrice?.let { discountedPrice ->
-                                onNodeWithContentDescription(label = "horizontalSectionList").performScrollToNode(hasText(text = "${discountedPrice}원")).assertExists().assertIsDisplayed()
-                            }
-                            onNodeWithContentDescription(label = "horizontalSectionList").performScrollToNode(hasContentDescription(value = product.image!!)).assertExists().assertIsDisplayed()
                         }
-                    }
-                    SectionType.GRID -> {
-                        it.section.products?.forEach { product ->
-                            onNodeWithText(text = product.name!!).assertExists().assertIsDisplayed()
-                            product.discountedPrice?.let { discountedPrice ->
-                                onNodeWithText(text = "${getDiscountRate(product.originalPrice ?: 0, discountedPrice)}%")
+
+                        SectionType.GRID -> {
+                            it.section.products?.forEach { product ->
+                                onNodeWithText(text = product.name!!)
+                                    .assertExists()
+                                    .assertIsDisplayed()
+                                product.discountedPrice?.let { discountedPrice ->
+                                    onNodeWithText(text = productDiscountRate.format(getDiscountRate(product.originalPrice ?: 0, discountedPrice).toInt(), "%"))
+                                }
+                                onNodeWithText(text = productPriceString.format(product.originalPrice))
+                                    .assertExists()
+                                    .assertIsDisplayed()
+                                product.discountedPrice?.let { discountedPrice ->
+                                    onNodeWithText(text = productPriceString.format(discountedPrice))
+                                        .assertExists()
+                                        .assertIsDisplayed()
+                                }
+                                onNodeWithContentDescription(label = product.image!!)
+                                    .assertExists()
+                                    .assertIsDisplayed()
                             }
-                            onNodeWithText(text = "${product.originalPrice}원").assertExists().assertIsDisplayed()
-                            product.discountedPrice?.let { discountedPrice ->
-                                onNodeWithText(text = "${discountedPrice}원").assertExists().assertIsDisplayed()
-                            }
-                            onNodeWithContentDescription(label = product.image!!).assertExists().assertIsDisplayed()
                         }
                     }
                 }
-            }
         }
     }
 
     @Test
     fun addFavoriteTest() = runTest {
-        val products = listOf(
+        val products = listOfNotNull(
             testSectionInfo.data?.get(1)?.products?.data?.get(3),
             testSectionInfo.data?.get(0)?.products?.data?.get(4),
             testSectionInfo.data?.get(2)?.products?.data?.get(2)
         )
+
         composeTestRule.apply {
             setContent {
                 MainScreen(
@@ -129,7 +176,7 @@ class MainScreenTest {
 
             testDatabaseRepository.productDatabase.emit(emptyList())
 
-            products.filterNotNull().forEach { product ->
+            products.forEach { product ->
                 viewModel.sectionPager.asSnapshot()
                     .filterIsInstance<MainUiModel.Section>()
                     .find { section -> section.section.products?.find { it.id == product.id } != null }
@@ -144,9 +191,9 @@ class MainScreenTest {
                                     .assertIsDisplayed()
 
                                 onNodeWithContentDescription(label = "verticalSectionList")
-                                    .performScrollToNode(hasTestTag(testTag = "${product.name}_productComponent"))
+                                    .performScrollToNode(hasContentDescription(value = "${product.name}_productComponent"))
                                     .onChildren()
-                                    .filterToOne(hasTestTag(testTag = "${product.name}_productComponent"))
+                                    .filterToOne(hasContentDescription(value = "${product.name}_productComponent"))
                                     .onChildren()
                                     .filterToOne(hasContentDescription(value = "unFavorite"))
                                     .assertExists()
@@ -154,9 +201,9 @@ class MainScreenTest {
                                     .performClick()
 
                                 onNodeWithContentDescription(label = "verticalSectionList")
-                                    .performScrollToNode(hasTestTag(testTag = "${product.name}_productComponent"))
+                                    .performScrollToNode(hasContentDescription(value = "${product.name}_productComponent"))
                                     .onChildren()
-                                    .filterToOne(hasTestTag(testTag = "${product.name}_productComponent"))
+                                    .filterToOne(hasContentDescription(value = "${product.name}_productComponent"))
                                     .onChildren()
                                     .filterToOne(hasContentDescription(value = "favorite"))
                                     .assertExists()
@@ -169,9 +216,9 @@ class MainScreenTest {
                                     .assertIsDisplayed()
 
                                 onNodeWithContentDescription(label = "horizontalSectionList")
-                                    .performScrollToNode(hasTestTag(testTag = "${product.name}_productComponent"))
+                                    .performScrollToNode(hasContentDescription(value = "${product.name}_productComponent"))
                                     .onChildren()
-                                    .filterToOne(hasTestTag(testTag = "${product.name}_productComponent"))
+                                    .filterToOne(hasContentDescription(value = "${product.name}_productComponent"))
                                     .onChildren()
                                     .filterToOne(hasContentDescription(value = "unFavorite"))
                                     .assertExists()
@@ -179,9 +226,9 @@ class MainScreenTest {
                                     .performClick()
 
                                 onNodeWithContentDescription(label = "horizontalSectionList")
-                                    .performScrollToNode(hasTestTag(testTag = "${product.name}_productComponent"))
+                                    .performScrollToNode(hasContentDescription(value = "${product.name}_productComponent"))
                                     .onChildren()
-                                    .filterToOne(hasTestTag(testTag = "${product.name}_productComponent"))
+                                    .filterToOne(hasContentDescription(value = "${product.name}_productComponent"))
                                     .onChildren()
                                     .filterToOne(hasContentDescription(value = "favorite"))
                                     .assertExists()
@@ -193,20 +240,14 @@ class MainScreenTest {
                                     .assertExists()
                                     .assertIsDisplayed()
 
-                                onNodeWithContentDescription(label = "gridSectionList")
-                                    .performScrollToNode(hasTestTag(testTag = "${product.name}_productComponent"))
-                                    .onChildren()
-                                    .filterToOne(hasTestTag(testTag = "${product.name}_productComponent"))
+                                onNodeWithContentDescription(label = "${product.name}_productComponent")
                                     .onChildren()
                                     .filterToOne(hasContentDescription(value = "unFavorite"))
                                     .assertExists()
                                     .assertIsDisplayed()
                                     .performClick()
 
-                                onNodeWithContentDescription(label = "gridSectionList")
-                                    .performScrollToNode(hasTestTag(testTag = "${product.name}_productComponent"))
-                                    .onChildren()
-                                    .filterToOne(hasTestTag(testTag = "${product.name}_productComponent"))
+                                onNodeWithContentDescription(label = "${product.name}_productComponent")
                                     .onChildren()
                                     .filterToOne(hasContentDescription(value = "favorite"))
                                     .assertExists()
@@ -217,7 +258,7 @@ class MainScreenTest {
             }
 
             val favoriteProducts = testDatabaseRepository.getProducts().first()
-            products.filterNotNull().forEach { product ->
+            products.forEach { product ->
                 assertTrue(favoriteProducts.find { it.id == product.id } != null)
             }
         }
@@ -225,15 +266,16 @@ class MainScreenTest {
 
     @Test
     fun removeFavoriteTest() = runTest {
-        val favoriteProducts = listOf(
-//            testSectionInfo.data?.get(1)?.products?.data?.get(2),
-//            testSectionInfo.data?.get(1)?.products?.data?.get(5),
+        val favoriteProducts = listOfNotNull(
+            testSectionInfo.data?.get(1)?.products?.data?.get(2),
+            testSectionInfo.data?.get(1)?.products?.data?.get(5),
             testSectionInfo.data?.get(0)?.products?.data?.get(2),
             testSectionInfo.data?.get(2)?.products?.data?.get(1),
             testSectionInfo.data?.get(0)?.products?.data?.get(4),
             testSectionInfo.data?.get(2)?.products?.data?.get(4),
-//            testSectionInfo.data?.get(1)?.products?.data?.get(3)
+            testSectionInfo.data?.get(1)?.products?.data?.get(3)
         )
+
         composeTestRule.apply {
             setContent {
                 MainScreen(
@@ -245,9 +287,9 @@ class MainScreenTest {
 
             onNodeWithContentDescription(label = "mainLoadingProgress").assertExists().assertIsDisplayed()
 
-            testDatabaseRepository.productDatabase.emit(favoriteProducts.filterNotNull())
+            testDatabaseRepository.productDatabase.emit(favoriteProducts)
 
-            favoriteProducts.filterNotNull().forEach { favoriteProduct ->
+            favoriteProducts.forEach { favoriteProduct ->
                 viewModel.sectionPager.asSnapshot()
                     .filterIsInstance<MainUiModel.Section>()
                     .find { section -> section.section.products?.find { product -> product.id == favoriteProduct.id } != null }
@@ -262,9 +304,9 @@ class MainScreenTest {
                                     .assertIsDisplayed()
 
                                 onNodeWithContentDescription(label = "verticalSectionList")
-                                    .performScrollToNode(hasTestTag(testTag = "${favoriteProduct.name}_productComponent"))
+                                    .performScrollToNode(hasContentDescription(value = "${favoriteProduct.name}_productComponent"))
                                     .onChildren()
-                                    .filterToOne(hasTestTag(testTag = "${favoriteProduct.name}_productComponent"))
+                                    .filterToOne(hasContentDescription(value = "${favoriteProduct.name}_productComponent"))
                                     .onChildren()
                                     .filterToOne(hasContentDescription(value = "favorite"))
                                     .assertExists()
@@ -272,9 +314,9 @@ class MainScreenTest {
                                     .performClick()
 
                                 onNodeWithContentDescription(label = "verticalSectionList")
-                                    .performScrollToNode(hasTestTag(testTag = "${favoriteProduct.name}_productComponent"))
+                                    .performScrollToNode(hasContentDescription(value = "${favoriteProduct.name}_productComponent"))
                                     .onChildren()
-                                    .filterToOne(hasTestTag(testTag = "${favoriteProduct.name}_productComponent"))
+                                    .filterToOne(hasContentDescription(value = "${favoriteProduct.name}_productComponent"))
                                     .onChildren()
                                     .filterToOne(hasContentDescription(value = "unFavorite"))
                                     .assertExists()
@@ -287,9 +329,9 @@ class MainScreenTest {
                                     .assertIsDisplayed()
 
                                 onNodeWithContentDescription(label = "horizontalSectionList")
-                                    .performScrollToNode(hasTestTag(testTag = "${favoriteProduct.name}_productComponent"))
+                                    .performScrollToNode(hasContentDescription(value = "${favoriteProduct.name}_productComponent"))
                                     .onChildren()
-                                    .filterToOne(hasTestTag(testTag = "${favoriteProduct.name}_productComponent"))
+                                    .filterToOne(hasContentDescription(value = "${favoriteProduct.name}_productComponent"))
                                     .onChildren()
                                     .filterToOne(hasContentDescription(value = "favorite"))
                                     .assertExists()
@@ -297,9 +339,9 @@ class MainScreenTest {
                                     .performClick()
 
                                 onNodeWithContentDescription(label = "horizontalSectionList")
-                                    .performScrollToNode(hasTestTag(testTag = "${favoriteProduct.name}_productComponent"))
+                                    .performScrollToNode(hasContentDescription(value = "${favoriteProduct.name}_productComponent"))
                                     .onChildren()
-                                    .filterToOne(hasTestTag(testTag = "${favoriteProduct.name}_productComponent"))
+                                    .filterToOne(hasContentDescription(value = "${favoriteProduct.name}_productComponent"))
                                     .onChildren()
                                     .filterToOne(hasContentDescription(value = "unFavorite"))
                                     .assertExists()
@@ -311,20 +353,14 @@ class MainScreenTest {
                                     .assertExists()
                                     .assertIsDisplayed()
 
-                                onNodeWithContentDescription(label = "gridSectionList")
-                                    .performScrollToNode(hasTestTag(testTag = "${favoriteProduct.name}_productComponent"))
-                                    .onChildren()
-                                    .filterToOne(hasTestTag(testTag = "${favoriteProduct.name}_productComponent"))
+                                onNodeWithContentDescription(label = "${favoriteProduct.name}_productComponent")
                                     .onChildren()
                                     .filterToOne(hasContentDescription(value = "favorite"))
                                     .assertExists()
                                     .assertIsDisplayed()
                                     .performClick()
 
-                                onNodeWithContentDescription(label = "gridSectionList")
-                                    .performScrollToNode(hasTestTag(testTag = "${favoriteProduct.name}_productComponent"))
-                                    .onChildren()
-                                    .filterToOne(hasTestTag(testTag = "${favoriteProduct.name}_productComponent"))
+                                onNodeWithContentDescription(label = "${favoriteProduct.name}_productComponent")
                                     .onChildren()
                                     .filterToOne(hasContentDescription(value = "unFavorite"))
                                     .assertExists()

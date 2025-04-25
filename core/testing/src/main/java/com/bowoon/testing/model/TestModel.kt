@@ -21,7 +21,7 @@ val testSectionInfo = SectionInfo(
                         originalPrice = 23000,
                         discountedPrice = null,
                         isSoldOut = false,
-                        isFavorite = true
+                        isFavorite = false
                     ),
                     Product(
                         id = 2,
@@ -39,7 +39,7 @@ val testSectionInfo = SectionInfo(
                         originalPrice = 3850,
                         discountedPrice = 3500,
                         isSoldOut = false,
-                        isFavorite = true
+                        isFavorite = false
                     ),
                     Product(
                         id = 4,
@@ -57,7 +57,7 @@ val testSectionInfo = SectionInfo(
                         originalPrice = 10000,
                         discountedPrice = 7900,
                         isSoldOut = false,
-                        isFavorite = true
+                        isFavorite = false
                     ),
                     Product(
                         id = 6,
@@ -149,7 +149,7 @@ val testSectionInfo = SectionInfo(
                         originalPrice = 38000,
                         discountedPrice = 30000,
                         isSoldOut = false,
-                        isFavorite = true
+                        isFavorite = false
                     ),
                     Product(
                         id = 14,
@@ -158,7 +158,7 @@ val testSectionInfo = SectionInfo(
                         originalPrice = 4000,
                         discountedPrice = 1800,
                         isSoldOut = false,
-                        isFavorite = true
+                        isFavorite = false
                     ),
                     Product(
                         id = 15,
@@ -167,7 +167,7 @@ val testSectionInfo = SectionInfo(
                         originalPrice = 7130,
                         discountedPrice = 2980,
                         isSoldOut = false,
-                        isFavorite = true
+                        isFavorite = false
                     ),
                     Product(
                         id = 16,
@@ -176,7 +176,7 @@ val testSectionInfo = SectionInfo(
                         originalPrice = 130000,
                         discountedPrice = 99000,
                         isSoldOut = false,
-                        isFavorite = true
+                        isFavorite = false
                     ),
                     Product(
                         id = 17,
@@ -185,7 +185,7 @@ val testSectionInfo = SectionInfo(
                         originalPrice = 125000,
                         discountedPrice = null,
                         isSoldOut = false,
-                        isFavorite = true
+                        isFavorite = false
                     ),
                     Product(
                         id = 18,
@@ -194,7 +194,7 @@ val testSectionInfo = SectionInfo(
                         originalPrice = 98000,
                         discountedPrice = 53700,
                         isSoldOut = false,
-                        isFavorite = true
+                        isFavorite = false
                     )
                 )
             )

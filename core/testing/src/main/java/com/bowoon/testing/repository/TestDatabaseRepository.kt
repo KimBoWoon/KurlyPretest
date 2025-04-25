@@ -18,6 +18,6 @@ class TestDatabaseRepository : DatabaseRepository {
     }
 
     override suspend fun deleteProduct(product: Product) {
-        productDatabase.emit(currentProductDatabase - product)
+        productDatabase.emit(currentProductDatabase.filter { it.id != product.id })
     }
 }
