@@ -28,7 +28,7 @@ class MainVM @Inject constructor(
 
     val sectionPager = combine(
         Pager(
-            config = PagingConfig(pageSize = 1, prefetchDistance = 5, initialLoadSize = 1),
+            config = PagingConfig(pageSize = 1, prefetchDistance = 3, initialLoadSize = 1),
             initialKey = 1,
             pagingSourceFactory = { sectionRepository.getKurlyPagingSource() }
         ).flow.cachedIn(scope = viewModelScope).map {

@@ -19,9 +19,9 @@ import java.util.concurrent.TimeUnit
 
 @Module
 @InstallIn(SingletonComponent::class)
-object TMDBRetrofitModule {
+object KurlyRetrofitModule {
     @Provides
-    fun provideTMDBOkHttpClient(
+    fun provideKurlyOkHttpClient(
         @ApplicationContext context: Context,
         httpLoggingInterceptor: HttpLoggingInterceptor,
         okHttpProfilerInterceptor: OkHttpProfilerInterceptor,
@@ -49,12 +49,12 @@ object TMDBRetrofitModule {
 
     @Provides
     fun provideInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
+        level = if (BuildConfig.IS_DEBUGGING_LOGGING) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
     }
 
     @Provides
     fun provideOkHttpProfilerInterceptor(): OkHttpProfilerInterceptor = OkHttpProfilerInterceptor()
 
     @Provides
-    fun provideTMDBUrl(): String = "https://kurly.com"
+    fun provideKurlyUrl(): String = "https://kurly.com"
 }

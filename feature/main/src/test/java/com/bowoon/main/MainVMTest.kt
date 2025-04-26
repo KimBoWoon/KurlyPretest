@@ -49,22 +49,23 @@ class MainVMTest {
         testDatabaseRepository.insertProduct(product = Product(id = 5))
         testDatabaseRepository.insertProduct(product = Product(id = 6))
 
-        val list = viewModel.sectionPager.asSnapshot()
-
         assertEquals(
-            list.filter { it != MainUiModel.Separator }.take(3),
-            testSectionInfo.data?.map<Section, MainUiModel> { section ->
-                MainUiModel.Section(
-                    section = MainSection(
-                        sectionId = section.id,
-                        type = SectionType.entries.find { section.type == it.label } ?: SectionType.NONE,
-                        title = section.title,
-                        products = testSectionInfo.data?.get(section.id ?: 0)?.products?.data?.map { product ->
-                            if (product.id == 1 || product.id == 5 || product.id == 6) product.copy(isFavorite = true) else product
-                        }
-                    )
+            viewModel.sectionPager.asSnapshot().take(5),
+            testSectionInfo.data?.flatMap { section: Section ->
+                listOf(
+                    MainUiModel.Section(
+                        section = MainSection(
+                            sectionId = section.id,
+                            type = SectionType.entries.find { it.label == section.type } ?: SectionType.NONE,
+                            title = section.title,
+                            products = section.products?.data?.map { product ->
+                                if (product.id == 1 || product.id == 5 || product.id == 6) product.copy(isFavorite = true) else product
+                            }
+                        )
+                    ),
+                    MainUiModel.Separator
                 )
-            }
+            }?.dropLast(1) ?: emptyList()
         )
     }
 

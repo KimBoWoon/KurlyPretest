@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -24,6 +23,7 @@ import com.bowoon.common.getDiscountRate
 import com.bowoon.kurlypretest.core.ui.R
 import com.bowoon.model.Product
 import com.bowoon.model.SectionType
+import com.bowoon.ui.ui.theme.discountRateColor
 import com.bowoon.ui.utils.dp150
 import com.bowoon.ui.utils.dp200
 import com.bowoon.ui.utils.dp5
@@ -63,7 +63,6 @@ fun ProductComponent(
         Text(
             modifier = Modifier.fillMaxWidth().padding(vertical = dp5),
             text = product.name ?: "",
-            minLines = titleLine,
             maxLines = titleLine,
             overflow = TextOverflow.Ellipsis,
             fontSize = sp13,
@@ -81,7 +80,7 @@ fun ProductComponent(
                     ) {
                         Text(
                             text = stringResource(R.string.discount_rate, discountRate.toInt()),
-                            color = Color(0xFFFA622F),
+                            color = discountRateColor,
                             fontSize = sp15,
                             style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false), fontWeight = FontWeight.Bold)
                         )
@@ -106,7 +105,7 @@ fun ProductComponent(
                         Text(
                             modifier = Modifier.padding(end = dp5),
                             text = stringResource(R.string.discount_rate, discountRate.toInt()),
-                            color = Color(0xFFFA622F),
+                            color = discountRateColor,
                             fontSize = sp15,
                             style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false), fontWeight = FontWeight.Bold)
                         )

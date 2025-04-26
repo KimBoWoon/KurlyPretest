@@ -45,6 +45,7 @@ import com.bowoon.ui.utils.dp1
 import com.bowoon.ui.utils.dp10
 import com.bowoon.ui.utils.dp1000
 import com.bowoon.ui.utils.dp20
+import com.bowoon.ui.utils.dp300
 import com.bowoon.ui.utils.sp20
 
 @Composable
@@ -188,7 +189,7 @@ fun HorizontalProductList(
     removeFavorite: (Product) -> Unit
 ) {
     LazyRow(
-        modifier = Modifier.semantics { contentDescription = "horizontalSectionList" }.fillMaxWidth(),
+        modifier = Modifier.semantics { contentDescription = "horizontalSectionList" }.fillMaxWidth().height(dp300),
         horizontalArrangement = Arrangement.spacedBy(space = dp10),
         contentPadding = PaddingValues(horizontal = dp10)
     ) {
