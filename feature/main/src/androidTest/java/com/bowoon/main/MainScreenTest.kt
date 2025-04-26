@@ -11,9 +11,13 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
+import androidx.paging.PagingSource
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.testing.asSnapshot
 import com.bowoon.common.getDiscountRate
+import com.bowoon.kurlypretest.core.ui.R
+import com.bowoon.model.MainSection
+import com.bowoon.model.Section
 import com.bowoon.model.SectionType
 import com.bowoon.testing.model.testSectionInfo
 import com.bowoon.testing.repository.TestDatabaseRepository
@@ -34,6 +38,9 @@ class MainScreenTest {
     private lateinit var testDatabaseRepository: TestDatabaseRepository
     private lateinit var productPriceString: String
     private lateinit var productDiscountRate: String
+    private lateinit var networkConnectionFailure: String
+    private lateinit var retry: String
+    private lateinit var cancel: String
 
     @Before
     fun setup() {
@@ -45,13 +52,135 @@ class MainScreenTest {
         )
 
         composeTestRule.activity.apply {
-            productPriceString = getString(com.bowoon.kurlypretest.core.ui.R.string.product_price)
-            productDiscountRate = getString(com.bowoon.kurlypretest.core.ui.R.string.discount_rate)
+            productPriceString = getString(R.string.product_price)
+            productDiscountRate = getString(R.string.discount_rate)
+            networkConnectionFailure = getString(com.bowoon.kurlypretest.core.network.R.string.network_connection_failure)
+            retry = getString(com.bowoon.kurlypretest.core.network.R.string.retry)
+            cancel = getString(com.bowoon.kurlypretest.core.network.R.string.cancel)
         }
     }
 
     @Test
-    fun productListTest() = runTest {
+    fun mainSectionSeparatorTest() = runTest {
+        composeTestRule.apply {
+            setContent {
+                MainScreen(
+                    sectionPager = viewModel.sectionPager.collectAsLazyPagingItems(),
+                    addFavorite = {},
+                    removeFavorite = {}
+                )
+            }
+
+            onNodeWithContentDescription(label = "mainLoadingProgress").assertExists().assertIsDisplayed()
+
+            testDatabaseRepository.productDatabase.emit(emptyList())
+
+            val testMain = testSectionInfo.data?.flatMap { section: Section ->
+                listOf(
+                    MainUiModel.Section(
+                        section = MainSection(
+                            sectionId = section.id,
+                            type = SectionType.entries.find { it.label == section.type } ?: SectionType.NONE,
+                            title = section.title,
+                            products = section.products?.data
+                        )
+                    ),
+                    MainUiModel.Separator
+                )
+            }?.dropLast(1) ?: emptyList()
+
+            assertEquals(
+                expected = viewModel.sectionPager.asSnapshot(),
+                actual = testMain
+            )
+        }
+    }
+
+    @Test
+    fun sectionErrorTest() = runTest {
+        composeTestRule.apply {
+            setContent {
+                MainScreen(
+                    sectionPager = viewModel.sectionPager.collectAsLazyPagingItems(),
+                    addFavorite = {},
+                    removeFavorite = {}
+                )
+            }
+
+            onNodeWithContentDescription(label = "mainLoadingProgress").assertExists().assertIsDisplayed()
+
+            testDatabaseRepository.productDatabase.emit(emptyList())
+            testSectionRepository.setErrorFlag(true)
+
+            val params = PagingSource
+                .LoadParams
+                .Refresh(
+                    key = 0,
+                    loadSize = 1,
+                    placeholdersEnabled = false
+                )
+            val expected = PagingSource
+                .LoadResult
+                .Error<Int, MainSection>(
+                    throwable = RuntimeException("error test")
+                )::class.java
+            val actual = testSectionRepository.getKurlyPagingSource().load(params = params)::class.java
+
+            assertEquals(expected, actual)
+
+            onNodeWithText(text = networkConnectionFailure).assertExists().assertIsDisplayed()
+            onNodeWithText(text = "error test").assertExists().assertIsDisplayed()
+            onNodeWithText(text = retry).assertExists().assertIsDisplayed()
+            onNodeWithText(text = cancel).assertExists().assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun sectionAppendTest() = runTest {
+        composeTestRule.apply {
+            setContent {
+                MainScreen(
+                    sectionPager = viewModel.sectionPager.collectAsLazyPagingItems(),
+                    addFavorite = {},
+                    removeFavorite = {}
+                )
+            }
+
+            onNodeWithContentDescription(label = "mainLoadingProgress").assertExists().assertIsDisplayed()
+
+            testDatabaseRepository.productDatabase.emit(emptyList())
+
+            val params = PagingSource
+                .LoadParams
+                .Append(
+                    key = 1,
+                    loadSize = 1,
+                    placeholdersEnabled = false
+                )
+
+            val expected: PagingSource.LoadResult.Page<Int, MainSection> = PagingSource
+                .LoadResult
+                .Page(
+                    data = testSectionInfo.data?.map { section ->
+                        MainSection(
+                            sectionId = section.id,
+                            type = SectionType.entries.find { it.label == section.type } ?: SectionType.NONE,
+                            title = section.title,
+                            products = section.products?.data
+                        )
+                    } ?: emptyList(),
+                    prevKey = null,
+                    nextKey = testSectionInfo.paging?.nextPage
+                )
+
+            val actual = testSectionRepository.getKurlyPagingSource().load(params = params)
+
+            assertEquals(expected, actual)
+        }
+    }
+
+    @Test
+    fun sectionListTest() = runTest {
         composeTestRule.apply {
             setContent {
                 MainScreen(

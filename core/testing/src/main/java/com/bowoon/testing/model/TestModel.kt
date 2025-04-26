@@ -1,5 +1,6 @@
 package com.bowoon.testing.model
 
+import com.bowoon.model.Paging
 import com.bowoon.model.Product
 import com.bowoon.model.Products
 import com.bowoon.model.Section
@@ -200,5 +201,7 @@ val testSectionInfo = SectionInfo(
             )
         )
     ),
-    paging = null
+    paging = Paging(
+        nextPage = 2
+    )
 )

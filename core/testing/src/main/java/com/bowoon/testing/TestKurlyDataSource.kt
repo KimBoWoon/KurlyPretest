@@ -6,6 +6,8 @@ import com.bowoon.network.KurlyDataSource
 import com.bowoon.testing.model.testSectionInfo
 
 class TestKurlyDataSource : KurlyDataSource {
-    override suspend fun getSections(page: Int): SectionInfo = testSectionInfo
+    var errorFlag = false
+
+    override suspend fun getSections(page: Int): SectionInfo = if (!errorFlag) testSectionInfo else throw RuntimeException("error test")
     override suspend fun getProducts(sectionId: Int): Products = testSectionInfo.data?.get(sectionId)?.products ?: Products()
 }

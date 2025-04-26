@@ -81,6 +81,7 @@ fun MainScreen(
                 CircularProgressIndicator(modifier = Modifier.semantics { contentDescription = "mainLoadingProgress" }.align(Alignment.Center))
             }
             sectionPager.loadState.append is LoadState.Loading -> isAppend = true
+            sectionPager.loadState.append is LoadState.Error -> isAppend = false
             sectionPager.loadState.refresh is LoadState.NotLoading -> isRefreshing = false
             sectionPager.loadState.refresh is LoadState.Error -> {
                 ConfirmDialog(
@@ -146,7 +147,7 @@ fun MainScreen(
             if (isAppend && !sectionPager.loadState.append.endOfPaginationReached) {
                 item {
                     CircularProgressIndicator(
-                        modifier = Modifier.wrapContentSize().padding(vertical = dp20)
+                        modifier = Modifier.semantics { contentDescription = "sectionPagingAppend" }.wrapContentSize().padding(vertical = dp20)
                     )
                 }
             }

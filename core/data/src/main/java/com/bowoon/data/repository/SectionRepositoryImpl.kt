@@ -10,7 +10,7 @@ import javax.inject.Inject
 class SectionRepositoryImpl @Inject constructor(
     private val kurlyDataSource: KurlyDataSource
 ) : SectionRepository {
-    override fun getSection(): KurlySectionPaging = KurlySectionPaging(kurlyDataSource)
+    override fun getKurlyPagingSource(): KurlySectionPaging = KurlySectionPaging(kurlyDataSource)
     override fun getProducts(sectionId: Int): Flow<Products> = flow {
         emit(kurlyDataSource.getProducts(sectionId))
     }

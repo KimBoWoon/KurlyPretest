@@ -4,10 +4,9 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.bowoon.common.Log
 import com.bowoon.model.MainSection
-import com.bowoon.model.Products
 import com.bowoon.model.SectionType
 import com.bowoon.network.KurlyDataSource
-import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -18,33 +17,27 @@ class KurlySectionPaging @Inject constructor(
 ) : PagingSource<Int, MainSection>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MainSection> =
         runCatching {
-            val request = mutableListOf<Deferred<Products>>()
-            val response = apis.getSections(params.key ?: 1)
-            coroutineScope {
-                response.data?.forEach { section ->
-                    section.id?.let { sectionId ->
-                        request.add(async { apis.getProducts(sectionId) })
-                    }
-                }
-
-                val result = request.awaitAll()
-
-                response.data?.forEachIndexed { index, section ->
-                    section.products = result[index]
+            val section = coroutineScope {
+                apis.getSections(params.key ?: 1).let { response ->
+                    response.data?.mapNotNull { section ->
+                        section.id?.let { sectionId ->
+                            async(Dispatchers.IO) { apis.getProducts(sectionId) }
+                        }
+                    }?.awaitAll()?.mapIndexed { index, products ->
+                        MainSection(
+                            sectionId = response.data?.get(index)?.id,
+                            type = SectionType.entries.find { it.label == response.data?.get(index)?.type } ?: SectionType.NONE,
+                            title = response.data?.get(index)?.title,
+                            products = products.data
+                        )
+                    } to response.paging?.nextPage
                 }
             }
 
             LoadResult.Page(
-                data = response.data?.map { section ->
-                    MainSection(
-                        sectionId = section.id,
-                        type = SectionType.entries.find { it.label == section.type } ?: SectionType.NONE,
-                        title = section.title,
-                        products = section.products?.data ?: emptyList()
-                    )
-                } ?: emptyList(),
+                data = section.first ?: emptyList(),
                 prevKey = null,
-                nextKey = if (response.paging?.nextPage != null) (params.key ?: 1) + 1 else null
+                nextKey = if (section.second != null) (params.key ?: 1) + 1 else null
             )
         }.getOrElse { e ->
             Log.printStackTrace(e)

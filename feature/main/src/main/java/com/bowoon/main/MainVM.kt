@@ -30,7 +30,7 @@ class MainVM @Inject constructor(
         Pager(
             config = PagingConfig(pageSize = 1, prefetchDistance = 5, initialLoadSize = 1),
             initialKey = 1,
-            pagingSourceFactory = { sectionRepository.getSection() }
+            pagingSourceFactory = { sectionRepository.getKurlyPagingSource() }
         ).flow.cachedIn(scope = viewModelScope).map {
             it.map { mainSection -> MainUiModel.Section(mainSection) }
                 .insertSeparators { before: MainUiModel.Section?, after: MainUiModel.Section? ->
