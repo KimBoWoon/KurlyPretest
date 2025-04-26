@@ -1,6 +1,6 @@
 package com.bowoon.testing.repository
 
-import com.bowoon.data.paging.KurlySectionPaging
+import com.bowoon.data.paging.SectionPaging
 import com.bowoon.data.repository.SectionRepository
 import com.bowoon.model.Products
 import com.bowoon.testing.TestKurlyDataSource
@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.flow
 class TestSectionRepository : SectionRepository {
     private val testKurlySectionPaging = TestKurlyDataSource()
 
-    override fun getKurlyPagingSource(): KurlySectionPaging =
-        KurlySectionPaging(
+    override fun getKurlyPagingSource(): SectionPaging =
+        SectionPaging(
             apis = testKurlySectionPaging
         )
 

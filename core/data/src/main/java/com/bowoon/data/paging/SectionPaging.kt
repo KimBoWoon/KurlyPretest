@@ -12,7 +12,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
-class KurlySectionPaging @Inject constructor(
+class SectionPaging @Inject constructor(
     private val apis: KurlyDataSource
 ) : PagingSource<Int, MainSection>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MainSection> =

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import androidx.paging.filter
 import androidx.paging.insertSeparators
 import androidx.paging.map
 import com.bowoon.data.repository.DatabaseRepository
@@ -31,8 +32,9 @@ class MainVM @Inject constructor(
             config = PagingConfig(pageSize = 1, prefetchDistance = 3, initialLoadSize = 1),
             initialKey = 1,
             pagingSourceFactory = { sectionRepository.getKurlyPagingSource() }
-        ).flow.cachedIn(scope = viewModelScope).map {
-            it.map { mainSection -> MainUiModel.Section(mainSection) }
+        ).flow.cachedIn(scope = viewModelScope).map { pagingData ->
+            pagingData.filter { section -> section.products?.isNotEmpty() == true }
+                .map { mainSection -> MainUiModel.Section(mainSection) }
                 .insertSeparators { before: MainUiModel.Section?, after: MainUiModel.Section? ->
                     if (before != null && after != null) {
                         MainUiModel.Separator
@@ -49,7 +51,7 @@ class MainVM @Inject constructor(
                     MainUiModel.Section(
                         section = it.section.copy(
                             products = it.section.products?.map { product ->
-                                product.copy(isFavorite = favoriteList.find { it.id == product.id } != null)
+                                product.copy(isFavorite = favoriteList.find { favoriteProduct -> favoriteProduct.id == product.id } != null)
                             }
                         )
                     )

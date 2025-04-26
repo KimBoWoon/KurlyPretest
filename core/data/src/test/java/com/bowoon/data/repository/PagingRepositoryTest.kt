@@ -1,7 +1,7 @@
 package com.bowoon.data.repository
 
 import androidx.paging.PagingSource
-import com.bowoon.data.paging.KurlySectionPaging
+import com.bowoon.data.paging.SectionPaging
 import com.bowoon.model.MainSection
 import com.bowoon.model.SectionType
 import com.bowoon.testing.TestKurlyDataSource
@@ -19,7 +19,7 @@ class PagingRepositoryTest {
 
     @Test
     fun sectionPagingTest() = runTest {
-        val pagingSource = KurlySectionPaging(
+        val pagingSource = SectionPaging(
             apis = testKurlyApi
         )
 
