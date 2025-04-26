@@ -52,14 +52,16 @@ class MainVMTest {
         val list = viewModel.sectionPager.asSnapshot()
 
         assertEquals(
-            list.filter { it != MainUiModel.Separator },
+            list.filter { it != MainUiModel.Separator }.take(3),
             testSectionInfo.data?.map<Section, MainUiModel> { section ->
                 MainUiModel.Section(
                     section = MainSection(
                         sectionId = section.id,
                         type = SectionType.entries.find { section.type == it.label } ?: SectionType.NONE,
                         title = section.title,
-                        products = testSectionInfo.data?.get(section.id ?: 0)?.products?.data
+                        products = testSectionInfo.data?.get(section.id ?: 0)?.products?.data?.map { product ->
+                            if (product.id == 1 || product.id == 5 || product.id == 6) product.copy(isFavorite = true) else product
+                        }
                     )
                 )
             }

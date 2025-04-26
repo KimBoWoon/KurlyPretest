@@ -1,17 +1,16 @@
 package com.bowoon.ui
 
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.bowoon.ui.components.FavoriteButtonComponent
 import org.junit.Rule
@@ -26,15 +25,12 @@ class FavoriteButtonTest {
         composeTestRule.apply {
             setContent {
                 FavoriteButtonComponent(
-                    modifier = Modifier.testTag("favoriteButton"),
-                    isFavorite = true,
-                    onClick = {  }
+                    isFavorite = true
                 )
             }
 
-            onNodeWithTag(testTag = "favoriteButton").assertIsDisplayed()
-            onNodeWithContentDescription(label = "favorite").assertIsDisplayed()
-            onNodeWithContentDescription(label = "unFavorite").assertIsNotDisplayed()
+            onNodeWithContentDescription(label = "favorite").assertExists().assertIsDisplayed()
+            onNodeWithContentDescription(label = "unFavorite").assertDoesNotExist()
         }
     }
 
@@ -43,15 +39,12 @@ class FavoriteButtonTest {
         composeTestRule.apply {
             setContent {
                 FavoriteButtonComponent(
-                    modifier = Modifier.testTag("favoriteButton"),
-                    isFavorite = false,
-                    onClick = {  }
+                    isFavorite = false
                 )
             }
 
-            onNodeWithTag(testTag = "favoriteButton").assertIsDisplayed()
-            onNodeWithContentDescription(label = "unFavorite").assertIsDisplayed()
-            onNodeWithContentDescription(label = "favorite").assertIsNotDisplayed()
+            onNodeWithContentDescription(label = "unFavorite").assertExists().assertIsDisplayed()
+            onNodeWithContentDescription(label = "favorite").assertDoesNotExist()
         }
     }
 
@@ -63,23 +56,20 @@ class FavoriteButtonTest {
 
                 if (isFavorite) {
                     FavoriteButtonComponent(
-                        modifier = Modifier.testTag("favoriteButton"),
-                        isFavorite = isFavorite,
-                        onClick = { isFavorite = false }
+                        modifier = Modifier.clickable { isFavorite = false },
+                        isFavorite = isFavorite
                     )
                 } else {
                     FavoriteButtonComponent(
-                        modifier = Modifier.testTag("favoriteButton"),
-                        isFavorite = isFavorite,
-                        onClick = { isFavorite = true }
+                        modifier = Modifier.clickable { isFavorite = true },
+                        isFavorite = isFavorite
                     )
                 }
             }
 
-            onNodeWithTag(testTag = "favoriteButton").assertIsDisplayed()
-            onNodeWithContentDescription(label = "favorite").assertIsDisplayed()
-            onNodeWithContentDescription(label = "unFavorite").assertIsNotDisplayed()
-            onNodeWithTag(testTag = "favoriteButton").performClick()
+            onNodeWithContentDescription(label = "favorite").assertExists().assertIsDisplayed()
+            onNodeWithContentDescription(label = "unFavorite").assertDoesNotExist()
+            onNodeWithContentDescription(label = "favorite").performClick()
             onNodeWithContentDescription(label = "favorite").assertIsNotDisplayed()
             onNodeWithContentDescription(label = "unFavorite").assertIsDisplayed()
         }
@@ -93,23 +83,20 @@ class FavoriteButtonTest {
 
                 if (isFavorite) {
                     FavoriteButtonComponent(
-                        modifier = Modifier.testTag("favoriteButton"),
-                        isFavorite = isFavorite,
-                        onClick = { isFavorite = false }
+                        modifier = Modifier.clickable { isFavorite = false },
+                        isFavorite = isFavorite
                     )
                 } else {
                     FavoriteButtonComponent(
-                        modifier = Modifier.testTag("favoriteButton"),
-                        isFavorite = isFavorite,
-                        onClick = { isFavorite = true }
+                        modifier = Modifier.clickable { isFavorite = true },
+                        isFavorite = isFavorite
                     )
                 }
             }
 
-            onNodeWithTag(testTag = "favoriteButton").assertIsDisplayed()
-            onNodeWithContentDescription(label = "unFavorite").assertIsDisplayed()
-            onNodeWithContentDescription(label = "favorite").assertIsNotDisplayed()
-            onNodeWithTag(testTag = "favoriteButton").performClick()
+            onNodeWithContentDescription(label = "unFavorite").assertExists().assertIsDisplayed()
+            onNodeWithContentDescription(label = "favorite").assertDoesNotExist()
+            onNodeWithContentDescription(label = "unFavorite").performClick()
             onNodeWithContentDescription(label = "unFavorite").assertIsNotDisplayed()
             onNodeWithContentDescription(label = "favorite").assertIsDisplayed()
         }

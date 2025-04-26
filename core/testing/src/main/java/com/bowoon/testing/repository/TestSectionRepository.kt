@@ -10,22 +10,6 @@ import kotlinx.coroutines.flow.flow
 
 class TestSectionRepository : SectionRepository {
     private val testKurlySectionPaging = TestKurlyDataSource()
-//    var errorFlag = false
-//    private val items = if (errorFlag) {
-//        testSectionInfo.data?.map { section ->
-//            MainSection(
-//                sectionId = section.id,
-//                type = SectionType.entries.find { it.label == section.type } ?: SectionType.NONE,
-//                title = section.title,
-//                products = section.products?.data
-//            )
-//        } ?: emptyList()
-//    } else {
-//        throw RuntimeException("error test")
-//    }
-//    @SuppressLint("VisibleForTests")
-//    private val pagingSourceFactory = items.asPagingSourceFactory()
-//    val pagingSource = pagingSourceFactory()
 
     override fun getKurlyPagingSource(): KurlySectionPaging =
         KurlySectionPaging(

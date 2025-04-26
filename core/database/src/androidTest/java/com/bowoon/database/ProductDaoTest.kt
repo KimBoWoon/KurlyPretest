@@ -1,13 +1,21 @@
 package com.bowoon.database
 
+import android.content.Context
+import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider
+import com.bowoon.database.dao.ProductDao
 import com.bowoon.database.model.ProductEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.threeten.bp.Instant
 import kotlin.test.assertEquals
 
-internal class ProductDaoTest : DatabaseTest() {
+internal class ProductDaoTest {
+    private lateinit var db: ProductDatabase
+    private lateinit var productDao: ProductDao
     private val favoriteProducts = listOf(
         ProductEntity(
             id = 1,
@@ -37,6 +45,21 @@ internal class ProductDaoTest : DatabaseTest() {
             timestamp = Instant.now().epochSecond,
         )
     )
+
+    @Before
+    fun setup() {
+        db = run {
+            val context = ApplicationProvider.getApplicationContext<Context>()
+            Room.inMemoryDatabaseBuilder(
+                context,
+                ProductDatabase::class.java,
+            ).build()
+        }
+        productDao = db.productDao()
+    }
+
+    @After
+    fun teardown() = db.close()
 
     @Test
     fun getProductTest() = runTest {

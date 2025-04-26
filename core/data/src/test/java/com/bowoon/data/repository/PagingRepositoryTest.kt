@@ -29,7 +29,7 @@ class PagingRepositoryTest {
                     sectionId = section.id,
                     type = SectionType.entries.find { it.label == section.type } ?: SectionType.NONE,
                     title = section.title,
-                    products = testSectionInfo.data?.get(section.id)?.products?.data
+                    products = testSectionInfo.data?.get(section.id ?: -1)?.products?.data
                 )
             } ?: emptyList(),
             prevKey = null,

@@ -19,6 +19,7 @@ import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import com.bowoon.common.getDiscountRate
 import com.bowoon.kurlypretest.core.ui.R
 import com.bowoon.model.Product
@@ -54,13 +55,19 @@ fun ProductComponent(
             addFavorite = { addFavorite(product) },
             removeFavorite = { removeFavorite(product) }
         )
-        ProductTitleComponent(
-            title = product.name ?: "",
-            titleLine = when (type) {
-                SectionType.NONE -> 1
-                SectionType.VERTICAL -> 1
-                SectionType.HORIZONTAL, SectionType.GRID -> 2
-            }
+        val titleLine = when (type) {
+            SectionType.NONE -> 1
+            SectionType.VERTICAL -> 1
+            SectionType.HORIZONTAL, SectionType.GRID -> 2
+        }
+        Text(
+            modifier = Modifier.fillMaxWidth().padding(vertical = dp5),
+            text = product.name ?: "",
+            minLines = titleLine,
+            maxLines = titleLine,
+            overflow = TextOverflow.Ellipsis,
+            fontSize = sp13,
+            style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
         )
         if (product.discountedPrice != null) {
             val discountRate = getDiscountRate(product.originalPrice ?: 0, product.discountedPrice ?: 0)

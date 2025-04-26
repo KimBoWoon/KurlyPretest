@@ -24,6 +24,6 @@ class KurlyDataSourceTest {
     fun getProductsTest() = runTest {
         val result = datasource.getProducts(1)
 
-        assertEquals(result, testSectionInfo.data?.get(1)?.products?.data)
+        assertEquals(result, testSectionInfo.data?.get(1)?.products)
     }
 }
