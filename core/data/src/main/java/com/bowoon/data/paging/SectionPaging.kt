@@ -17,8 +17,9 @@ class SectionPaging @Inject constructor(
 ) : PagingSource<Int, MainSection>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MainSection> =
         runCatching {
-            val section = coroutineScope {
-                apis.getSections(params.key ?: 1).let { response ->
+            val loadKey = params.key ?: 1
+            val (section, nextKey) = coroutineScope {
+                apis.getSections(page = loadKey).let { response ->
                     response.data?.mapNotNull { section ->
                         section.id?.let { sectionId ->
                             async(Dispatchers.IO) { apis.getProducts(sectionId) }
@@ -30,14 +31,14 @@ class SectionPaging @Inject constructor(
                             title = response.data?.get(index)?.title,
                             products = products.data
                         )
-                    } to response.paging?.nextPage
+                    }?.filter { !it.products.isNullOrEmpty() } to response.paging?.nextPage
                 }
             }
 
             LoadResult.Page(
-                data = section.first ?: emptyList(),
+                data = section ?: emptyList(),
                 prevKey = null,
-                nextKey = if (section.second != null) (params.key ?: 1) + 1 else null
+                nextKey = if (nextKey != null) loadKey + 1 else null
             )
         }.getOrElse { e ->
             Log.printStackTrace(e)

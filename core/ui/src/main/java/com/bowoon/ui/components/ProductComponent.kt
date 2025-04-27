@@ -50,7 +50,7 @@ fun ProductComponent(
                 SectionType.VERTICAL -> Modifier.fillMaxWidth().aspectRatio(6f / 4f)
                 SectionType.HORIZONTAL, SectionType.GRID -> Modifier.fillMaxWidth().height(height = dp200)
             },
-            source = product.image ?: "",
+            product = product,
             isFavorite = product.isFavorite,
             addFavorite = { addFavorite(product) },
             removeFavorite = { removeFavorite(product) }

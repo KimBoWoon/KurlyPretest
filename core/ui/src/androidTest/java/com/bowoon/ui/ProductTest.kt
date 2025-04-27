@@ -105,6 +105,36 @@ class ProductTest {
     }
 
     @Test
+    fun soldOutTest() {
+        composeTestRule.apply {
+            setContent {
+                ProductComponent(
+                    product = Product(
+                        id = 1,
+                        name = "productName1",
+                        image = "/productImageUrl1.png",
+                        originalPrice = 4900,
+                        discountedPrice = 2700,
+                        isSoldOut = true,
+                        isFavorite = false
+                    ),
+                    type = SectionType.VERTICAL,
+                    addFavorite = {},
+                    removeFavorite = {}
+                )
+            }
+
+            onNodeWithText(text = "productName1").assertExists().assertIsDisplayed()
+            onNodeWithText(text = "4900원").assertExists().assertIsDisplayed()
+            onNodeWithText(text = "2700원").assertExists().assertIsDisplayed()
+            onNodeWithContentDescription(label = "SoldOutBox").assertExists().assertIsDisplayed()
+            onNodeWithText(text = "SoldOut").assertExists().assertIsDisplayed()
+            onNodeWithContentDescription(label = "unFavorite").assertExists().assertIsDisplayed()
+            onNodeWithContentDescription(label = "/productImageUrl1.png").assertExists().assertIsDisplayed()
+        }
+    }
+
+    @Test
     fun addFavoriteProductTest() {
         composeTestRule.apply {
             setContent {
