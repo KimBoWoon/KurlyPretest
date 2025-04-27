@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.bowoon.model.Product
@@ -44,7 +45,7 @@ class ProductTest {
             onNodeWithText(text = "4900원").assertExists().assertIsDisplayed()
             onNodeWithText(text = "2700원").assertExists().assertIsDisplayed()
             onNodeWithContentDescription(label = "unFavorite").assertExists().assertIsDisplayed()
-            onNodeWithContentDescription(label = "/productImageUrl1.png").assertExists().assertIsDisplayed()
+            onNodeWithTag(testTag = "/productImageUrl1.png").assertExists().assertIsDisplayed()
         }
     }
 
@@ -72,7 +73,7 @@ class ProductTest {
             onNodeWithText(text = "4900원").assertExists().assertIsDisplayed()
             onNodeWithText(text = "2700원").assertExists().assertIsDisplayed()
             onNodeWithContentDescription(label = "unFavorite").assertExists().assertIsDisplayed()
-            onNodeWithContentDescription(label = "/productImageUrl1.png").assertExists().assertIsDisplayed()
+            onNodeWithTag(testTag = "/productImageUrl1.png").assertExists().assertIsDisplayed()
         }
     }
 
@@ -100,7 +101,7 @@ class ProductTest {
             onNodeWithText(text = "4900원").assertExists().assertIsDisplayed()
             onNodeWithText(text = "2700원").assertExists().assertIsDisplayed()
             onNodeWithContentDescription(label = "unFavorite").assertExists().assertIsDisplayed()
-            onNodeWithContentDescription(label = "/productImageUrl1.png").assertExists().assertIsDisplayed()
+            onNodeWithTag(testTag = "/productImageUrl1.png").assertExists().assertIsDisplayed()
         }
     }
 
@@ -130,7 +131,7 @@ class ProductTest {
             onNodeWithContentDescription(label = "SoldOutBox").assertExists().assertIsDisplayed()
             onNodeWithText(text = "SoldOut").assertExists().assertIsDisplayed()
             onNodeWithContentDescription(label = "unFavorite").assertExists().assertIsDisplayed()
-            onNodeWithContentDescription(label = "/productImageUrl1.png").assertExists().assertIsDisplayed()
+            onNodeWithTag(testTag = "/productImageUrl1.png").assertExists().assertIsDisplayed()
         }
     }
 
@@ -159,7 +160,7 @@ class ProductTest {
             onNodeWithText(text = "productName1").assertExists().assertIsDisplayed()
             onNodeWithText(text = "4900원").assertExists().assertIsDisplayed()
             onNodeWithText(text = "2700원").assertExists().assertIsDisplayed()
-            onNodeWithContentDescription(label = "/productImageUrl1.png").assertExists().assertIsDisplayed()
+            onNodeWithTag(testTag = "/productImageUrl1.png").assertExists().assertIsDisplayed()
             onNodeWithContentDescription(label = "unFavorite").assertExists().assertIsDisplayed().performClick()
             onNodeWithContentDescription(label = "favorite").assertExists().assertIsDisplayed()
             onNodeWithContentDescription(label = "unFavorite").assertDoesNotExist()
@@ -191,7 +192,7 @@ class ProductTest {
             onNodeWithText(text = "productName1").assertExists().assertIsDisplayed()
             onNodeWithText(text = "4900원").assertExists().assertIsDisplayed()
             onNodeWithText(text = "2700원").assertExists().assertIsDisplayed()
-            onNodeWithContentDescription(label = "/productImageUrl1.png").assertExists().assertIsDisplayed()
+            onNodeWithTag(testTag = "/productImageUrl1.png").assertExists().assertIsDisplayed()
             onNodeWithContentDescription(label = "unFavorite").assertDoesNotExist()
             onNodeWithContentDescription(label = "favorite").assertExists().assertIsDisplayed().performClick()
             onNodeWithContentDescription(label = "unFavorite").assertExists().assertIsDisplayed()

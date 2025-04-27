@@ -9,7 +9,6 @@ import com.bowoon.testing.model.testSectionInfo
 import com.bowoon.testing.repository.TestDatabaseRepository
 import com.bowoon.testing.repository.TestSectionRepository
 import com.bowoon.testing.utils.MainDispatcherRule
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -43,7 +42,7 @@ class MainVMTest {
 
     @Test
     fun sectionFlowTest() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.sectionPager.collect() }
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.sectionPager.collect { println(it) } }
 
         testDatabaseRepository.insertProduct(product = Product(id = 1))
         testDatabaseRepository.insertProduct(product = Product(id = 5))

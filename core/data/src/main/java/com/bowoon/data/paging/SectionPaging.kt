@@ -38,7 +38,7 @@ class SectionPaging @Inject constructor(
             LoadResult.Page(
                 data = section ?: emptyList(),
                 prevKey = null,
-                nextKey = if (nextKey != null) loadKey + 1 else null
+                nextKey = nextKey
             )
         }.getOrElse { e ->
             Log.printStackTrace(e)

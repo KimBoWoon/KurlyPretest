@@ -202,6 +202,6 @@ val testSectionInfo = SectionInfo(
         )
     ),
     paging = Paging(
-        nextPage = 2
+        nextPage = null
     )
 )

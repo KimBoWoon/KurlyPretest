@@ -35,7 +35,6 @@ fun ProductImageComponent(
     Box {
         DynamicAsyncImageLoader(
             source = product.image ?: "",
-            contentDescription = product.image,
             contentScale = ContentScale.Crop,
             modifier = modifier
         )

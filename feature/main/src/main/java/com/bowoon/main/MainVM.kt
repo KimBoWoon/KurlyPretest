@@ -13,7 +13,6 @@ import com.bowoon.model.MainSection
 import com.bowoon.model.Product
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,30 +30,23 @@ class MainVM @Inject constructor(
             config = PagingConfig(pageSize = 1, prefetchDistance = 3, initialLoadSize = 1),
             initialKey = 1,
             pagingSourceFactory = { sectionRepository.getKurlyPagingSource() }
-        ).flow.cachedIn(scope = viewModelScope).map { pagingData ->
-            pagingData.map { mainSection -> MainUiModel.Section(mainSection) }
-                .insertSeparators { before: MainUiModel.Section?, after: MainUiModel.Section? ->
-                    if (before != null && after != null) {
-                        MainUiModel.Separator
-                    } else {
-                        null
-                    }
-                }
-        },
+        ).flow.cachedIn(scope = viewModelScope),
         databaseRepository.getProducts()
-    ) { pager, favoriteList ->
-        pager.map {
-            when (it) {
-                is MainUiModel.Section -> {
-                    MainUiModel.Section(
-                        section = it.section.copy(
-                            products = it.section.products?.map { product ->
-                                product.copy(isFavorite = favoriteList.find { favoriteProduct -> favoriteProduct.id == product.id } != null)
-                            }
-                        )
-                    )
-                }
-                else -> it
+    ) { pagingData, favoriteList ->
+        pagingData.map { mainSection ->
+            MainUiModel.Section(
+                section = MainSection(
+                    sectionId = mainSection.sectionId,
+                    type = mainSection.type,
+                    title = mainSection.title,
+                    products = mainSection.products?.map { product -> product.copy(isFavorite = favoriteList.find { it.id == product.id } != null) }
+                )
+            )
+        }.insertSeparators { before: MainUiModel.Section?, after: MainUiModel.Section? ->
+            if (before != null && after != null) {
+                MainUiModel.Separator
+            } else {
+                null
             }
         }
     }

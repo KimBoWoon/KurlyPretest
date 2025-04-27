@@ -4,10 +4,12 @@ import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
@@ -226,7 +228,7 @@ class MainScreenTest {
                                         .assertIsDisplayed()
                                 }
                                 onNodeWithContentDescription(label = "verticalSectionList")
-                                    .performScrollToNode(hasContentDescription(value = product.image!!))
+                                    .performScrollToNode(hasTestTag(testTag = product.image!!))
                                     .assertExists()
                                     .assertIsDisplayed()
                             }
@@ -252,7 +254,7 @@ class MainScreenTest {
                                         .assertIsDisplayed()
                                 }
                                 onNodeWithContentDescription(label = "horizontalSectionList")
-                                    .performScrollToNode(hasContentDescription(value = product.image!!))
+                                    .performScrollToNode(hasTestTag(testTag = product.image!!))
                                     .assertExists()
                                     .assertIsDisplayed()
                             }
@@ -274,7 +276,7 @@ class MainScreenTest {
                                         .assertExists()
                                         .assertIsDisplayed()
                                 }
-                                onNodeWithContentDescription(label = product.image!!)
+                                onNodeWithTag(testTag = product.image!!)
                                     .assertExists()
                                     .assertIsDisplayed()
                             }
