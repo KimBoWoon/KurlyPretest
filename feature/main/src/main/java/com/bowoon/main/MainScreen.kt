@@ -79,7 +79,9 @@ fun MainScreen(
         when {
             sectionPager.loadState.refresh is LoadState.Loading -> {
                 isRefreshing = true
-                CircularProgressIndicator(modifier = Modifier.semantics { contentDescription = "mainLoadingProgress" }.align(Alignment.Center))
+                CircularProgressIndicator(modifier = Modifier
+                    .semantics { contentDescription = "mainLoadingProgress" }
+                    .align(Alignment.Center))
             }
             sectionPager.loadState.append is LoadState.Loading -> isAppend = true
             sectionPager.loadState.append is LoadState.Error -> isAppend = false
@@ -96,7 +98,9 @@ fun MainScreen(
         }
 
         LazyColumn(
-            modifier = Modifier.semantics { contentDescription = "sectionList" }.fillMaxSize(),
+            modifier = Modifier
+                .semantics { contentDescription = "sectionList" }
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(
@@ -109,46 +113,57 @@ fun MainScreen(
                     }
                 }
             ) { index ->
-                Column {
-                    when (val item = sectionPager[index]) {
-                        is MainUiModel.Separator -> Spacer(modifier = Modifier.padding(all = dp20).fillMaxWidth().height(height = dp1).background(color = MaterialTheme.colorScheme.primary))
-                        is MainUiModel.Section -> {
-                            item.section.let { section ->
-                                Text(
-                                    modifier = Modifier.fillMaxWidth().padding(vertical = dp10),
-                                    text = section.title ?: "",
-                                    fontSize = sp20,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.Bold
+                when (val item = sectionPager[index]) {
+                    is MainUiModel.Separator -> {
+                        Spacer(
+                            modifier = Modifier
+                                .padding(all = dp20)
+                                .fillMaxWidth()
+                                .height(height = dp1)
+                                .background(color = MaterialTheme.colorScheme.primary)
+                        )
+                    }
+                    is MainUiModel.Section -> {
+                        item.section.let { section ->
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = dp10),
+                                text = section.title ?: "",
+                                fontSize = sp20,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold
+                            )
+                            when (section.type) {
+                                SectionType.NONE -> {}
+                                SectionType.VERTICAL -> VerticalProductList(
+                                    product = section.products ?: emptyList(),
+                                    addFavorite = addFavorite,
+                                    removeFavorite = removeFavorite
                                 )
-                                when (section.type) {
-                                    SectionType.NONE -> {}
-                                    SectionType.VERTICAL -> VerticalProductList(
-                                        product = section.products ?: emptyList(),
-                                        addFavorite = addFavorite,
-                                        removeFavorite = removeFavorite
-                                    )
-                                    SectionType.HORIZONTAL -> HorizontalProductList(
-                                        product = section.products ?: emptyList(),
-                                        addFavorite = addFavorite,
-                                        removeFavorite = removeFavorite
-                                    )
-                                    SectionType.GRID -> GridProductList(
-                                        product = section.products?.take(6) ?: emptyList(),
-                                        addFavorite = addFavorite,
-                                        removeFavorite = removeFavorite
-                                    )
-                                }
+                                SectionType.HORIZONTAL -> HorizontalProductList(
+                                    product = section.products ?: emptyList(),
+                                    addFavorite = addFavorite,
+                                    removeFavorite = removeFavorite
+                                )
+                                SectionType.GRID -> GridProductList(
+                                    product = section.products?.take(6) ?: emptyList(),
+                                    addFavorite = addFavorite,
+                                    removeFavorite = removeFavorite
+                                )
                             }
                         }
-                        null -> {}
                     }
+                    null -> {}
                 }
             }
             if (isAppend && !sectionPager.loadState.append.endOfPaginationReached) {
                 item {
                     CircularProgressIndicator(
-                        modifier = Modifier.semantics { contentDescription = "sectionPagingAppend" }.wrapContentSize().padding(vertical = dp20)
+                        modifier = Modifier
+                            .semantics { contentDescription = "sectionPagingAppend" }
+                            .wrapContentSize()
+                            .padding(vertical = dp20)
                     )
                 }
             }
@@ -168,7 +183,10 @@ fun VerticalProductList(
     removeFavorite: (Product) -> Unit
 ) {
     Column(
-        modifier = Modifier.semantics { contentDescription = "verticalSectionList" }.fillMaxWidth().padding(horizontal = dp10),
+        modifier = Modifier
+            .semantics { contentDescription = "verticalSectionList" }
+            .fillMaxWidth()
+            .padding(horizontal = dp10),
         verticalArrangement = Arrangement.spacedBy(space = dp10)
     ) {
         product.forEach { product ->
@@ -189,7 +207,10 @@ fun HorizontalProductList(
     removeFavorite: (Product) -> Unit
 ) {
     LazyRow(
-        modifier = Modifier.semantics { contentDescription = "horizontalSectionList" }.fillMaxWidth().height(dp300),
+        modifier = Modifier
+            .semantics { contentDescription = "horizontalSectionList" }
+            .fillMaxWidth()
+            .height(dp300),
         horizontalArrangement = Arrangement.spacedBy(space = dp10),
         contentPadding = PaddingValues(horizontal = dp10)
     ) {
@@ -214,7 +235,9 @@ fun GridProductList(
     removeFavorite: (Product) -> Unit
 ) {
     LazyVerticalGrid(
-        modifier = Modifier.semantics { contentDescription = "gridSectionList" }.heightIn(max = dp1000),
+        modifier = Modifier
+            .semantics { contentDescription = "gridSectionList" }
+            .heightIn(max = dp1000),
         columns = GridCells.Fixed(3),
         contentPadding = PaddingValues(horizontal = dp10),
         horizontalArrangement = Arrangement.spacedBy(space = dp10),

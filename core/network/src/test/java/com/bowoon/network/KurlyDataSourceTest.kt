@@ -22,8 +22,9 @@ class KurlyDataSourceTest {
 
     @Test
     fun getProductsTest() = runTest {
-        val result = datasource.getProducts(1)
-
-        assertEquals(result, testSectionInfo.data?.get(1)?.products)
+        testSectionInfo.data?.forEachIndexed { index, section ->
+            val result = datasource.getProducts(index)
+            assertEquals(result, section.products)
+        }
     }
 }

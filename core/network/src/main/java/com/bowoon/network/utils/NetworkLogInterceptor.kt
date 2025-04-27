@@ -17,7 +17,7 @@ class NetworkLogInterceptor @Inject constructor(
 ) : Interceptor {
     companion object {
         private const val TAG = "#NetworkLogInterceptor"
-        private var STRING_DIVIDER_CNT = 1000
+        private const val STRING_DIVIDER_CNT = 1000
         private val NETWORK_LOG_BODY = """
             ----------------------------------------------------------------------------------
             ReqMethod : %s
@@ -65,32 +65,20 @@ class NetworkLogInterceptor @Inject constructor(
                 }
             }
         }.onFailure { e ->
-            Log.e(TAG, e.message ?: "something wrong...")
+            Log.printStackTrace(e)
         }
 
         return response.newBuilder().body(bodyString.toResponseBody(response.body?.contentType())).build()
     }
 
-    /**
-     * 리스폰스바디의 값 가져오기
-     *
-     * @param request 가져와야할 리퀘스트
-     * @return 바디 값
-     */
     private fun bodyToString(request: Request): String? =
         runCatching {
             val copy = request.newBuilder().build()
             val buffer = Buffer()
             copy.body?.writeTo(buffer)
             buffer.readUtf8()
-        }.onSuccess {
-            return it
-        }.onFailure { e ->
-            (e as? IOException)?.run {
-                return "did not work"
-            }
-            (e as? NullPointerException)?.run {
-                return "did not have body"
-            }
-        }.getOrNull()
+        }.getOrElse { e ->
+            Log.printStackTrace(e)
+            null
+        }
 }
