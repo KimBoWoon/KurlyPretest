@@ -1,19 +1,6 @@
 package com.bowoon.convention
 
-import java.io.File
-import java.io.FileInputStream
-import java.util.Properties
-
 object Config {
-    private val prop: Properties = Properties().apply {
-        load(FileInputStream(File("./sign", "local.properties")))
-    }
-
-    fun getProp(propertyKey: String): String =
-        runCatching {
-            prop.getProperty(propertyKey)
-        }.getOrDefault("\"key not found\"")
-
     object ApplicationSetting {
         const val COMPILE_SDK_VERSION = 35
         const val MIN_SDK_VERSION = 24

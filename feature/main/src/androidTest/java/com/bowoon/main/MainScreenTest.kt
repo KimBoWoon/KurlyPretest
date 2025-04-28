@@ -126,7 +126,7 @@ class MainScreenTest {
                 .Error<Int, MainSection>(
                     throwable = RuntimeException("error test")
                 )::class.java
-            val actual = testSectionRepository.getKurlyPagingSource().load(params = params)::class.java
+            val actual = testSectionRepository.getSectionPagingSource().load(params = params)::class.java
 
             assertEquals(expected, actual)
 
@@ -175,7 +175,7 @@ class MainScreenTest {
                     nextKey = testSectionInfo.paging?.nextPage
                 )
 
-            val actual = testSectionRepository.getKurlyPagingSource().load(params = params)
+            val actual = testSectionRepository.getSectionPagingSource().load(params = params)
 
             assertEquals(expected, actual)
         }

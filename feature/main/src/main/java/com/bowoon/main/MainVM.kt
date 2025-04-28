@@ -29,7 +29,7 @@ class MainVM @Inject constructor(
         Pager(
             config = PagingConfig(pageSize = 1, prefetchDistance = 3, initialLoadSize = 1),
             initialKey = 1,
-            pagingSourceFactory = { sectionRepository.getKurlyPagingSource() }
+            pagingSourceFactory = { sectionRepository.getSectionPagingSource() }
         ).flow.cachedIn(scope = viewModelScope),
         databaseRepository.getProducts()
     ) { pagingData, favoriteList ->

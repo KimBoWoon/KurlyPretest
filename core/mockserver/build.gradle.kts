@@ -1,60 +1,27 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    kotlin("kapt")
-    id("dagger.hilt.android.plugin")
+    alias(libs.plugins.bowoon.android.library)
+    alias(libs.plugins.bowoon.hilt)
 }
 
 android {
     namespace = "com.bowoon.kurlypretest.core.mockserver"
-    compileSdk = 35
 
     defaultConfig {
-        minSdk = 24
-        targetSdk = 35
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
+        testInstrumentationRunner = "com.bowoon.testing.TestKurlyApplication"
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            setProguardFiles(
-                listOf(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            )
+    packaging {
+        resources {
+            excludes.add("/META-INF/versions/9/OSGI-INF/MANIFEST.MF")
         }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
     }
 }
 
 dependencies {
-    val hilt_version = "2.56.1"
-
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.4.2")
-    implementation("com.google.android.material:material:1.6.1")
-    implementation("com.squareup.okhttp3:okhttp:4.8.0")
-    implementation("com.google.code.gson:gson:2.9.0")
-    implementation("com.google.dagger:hilt-android:$hilt_version")
-    kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
-
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-
-    // hilt test
-    testImplementation("com.google.dagger:hilt-android-testing:$hilt_version")
-    // For instrumented tests.
-    androidTestImplementation("com.google.dagger:hilt-android-testing:$hilt_version")
-    // ...with Kotlin.
-    kaptAndroidTest("com.google.dagger:hilt-android-compiler:$hilt_version")
-    // ...with Java.
-    androidTestAnnotationProcessor("com.google.dagger:hilt-android-compiler:$hilt_version")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.google.code.gson:gson:2.11.0")
+    androidTestImplementation(libs.robolectric)
+    androidTestImplementation(libs.hilt.android.testing)
+    testImplementation(libs.robolectric)
+    androidTestImplementation(projects.core.testing)
 }

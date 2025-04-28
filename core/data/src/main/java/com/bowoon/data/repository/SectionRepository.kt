@@ -5,6 +5,6 @@ import com.bowoon.model.Products
 import kotlinx.coroutines.flow.Flow
 
 interface SectionRepository {
-    fun getKurlyPagingSource(): SectionPaging
+    fun getSectionPagingSource(): SectionPaging
     fun getProducts(sectionId: Int): Flow<Products>
 }

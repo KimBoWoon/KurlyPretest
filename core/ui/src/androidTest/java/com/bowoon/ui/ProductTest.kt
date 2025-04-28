@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertWidthIsEqualTo
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
@@ -14,6 +15,7 @@ import androidx.compose.ui.test.performClick
 import com.bowoon.model.Product
 import com.bowoon.model.SectionType
 import com.bowoon.ui.components.ProductComponent
+import com.bowoon.ui.utils.dp150
 import org.junit.Rule
 import org.junit.Test
 
@@ -74,6 +76,7 @@ class ProductTest {
             onNodeWithText(text = "2700원").assertExists().assertIsDisplayed()
             onNodeWithContentDescription(label = "unFavorite").assertExists().assertIsDisplayed()
             onNodeWithTag(testTag = "/productImageUrl1.png").assertExists().assertIsDisplayed()
+            onNodeWithText(text = "productName1").assertExists().assertIsDisplayed().assertWidthIsEqualTo(expectedWidth = dp150)
         }
     }
 
@@ -102,6 +105,7 @@ class ProductTest {
             onNodeWithText(text = "2700원").assertExists().assertIsDisplayed()
             onNodeWithContentDescription(label = "unFavorite").assertExists().assertIsDisplayed()
             onNodeWithTag(testTag = "/productImageUrl1.png").assertExists().assertIsDisplayed()
+            onNodeWithText(text = "productName1").assertExists().assertIsDisplayed().assertWidthIsEqualTo(expectedWidth = dp150)
         }
     }
 

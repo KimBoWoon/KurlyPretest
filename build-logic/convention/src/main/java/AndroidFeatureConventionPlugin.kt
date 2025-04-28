@@ -1,5 +1,4 @@
 import com.android.build.gradle.LibraryExtension
-import com.bowoon.convention.configureGradleManagedDevices
 import com.bowoon.convention.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -16,7 +15,6 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
 
             extensions.configure<LibraryExtension> {
                 testOptions.animationsDisabled = true
-                configureGradleManagedDevices(this)
             }
 
             dependencies {

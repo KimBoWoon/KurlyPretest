@@ -1,19 +1,17 @@
 package com.kurly.android.mockserver
 
-import android.content.Context
 import android.os.SystemClock
-import com.kurly.android.mockserver.core.AssetFileProvider
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Protocol
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
+import javax.inject.Inject
 import kotlin.random.Random
 
-class MockInterceptor(context: Context) : Interceptor {
-
-    private val mockServer = MockServer(AssetFileProvider(context))
-
+class MockInterceptor @Inject constructor(
+    private val mockServer: MockServer
+) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         SystemClock.sleep(Random.nextInt(1, 3) * 1000L)
 

@@ -2,8 +2,9 @@ package com.kurly.android.mockserver
 
 import com.kurly.android.mockserver.core.FileProvider
 import okhttp3.Request
+import javax.inject.Inject
 
-internal class MockServer constructor(
+class MockServer @Inject constructor(
     private val fileProvider: FileProvider
 ) {
 

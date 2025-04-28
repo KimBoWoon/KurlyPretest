@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flow
 class TestSectionRepository : SectionRepository {
     private val testKurlySectionPaging = TestKurlyDataSource()
 
-    override fun getKurlyPagingSource(): SectionPaging =
+    override fun getSectionPagingSource(): SectionPaging =
         SectionPaging(
             apis = testKurlySectionPaging
         )

@@ -1,6 +1,6 @@
 import com.android.build.api.dsl.ApplicationExtension
 import com.bowoon.convention.Config
-import com.bowoon.convention.KurlyPretestAppBuildType
+import com.bowoon.convention.AppBuildType
 import com.bowoon.convention.configureKotlinAndroid
 import com.bowoon.convention.libs
 import org.gradle.api.Plugin
@@ -33,13 +33,13 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
                 buildTypes {
                     debug {
-                        applicationIdSuffix = KurlyPretestAppBuildType.DEBUG.applicationIdSuffix
+                        applicationIdSuffix = AppBuildType.DEBUG.applicationIdSuffix
                         isMinifyEnabled = false
                         isDebuggable = true
                         isJniDebuggable = true
                     }
                     release {
-                        applicationIdSuffix = KurlyPretestAppBuildType.RELEASE.applicationIdSuffix
+                        applicationIdSuffix = AppBuildType.RELEASE.applicationIdSuffix
                         isMinifyEnabled = true
                         isShrinkResources = true
                         isDebuggable = false
